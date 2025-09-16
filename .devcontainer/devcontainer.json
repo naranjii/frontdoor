@@ -1,0 +1,28 @@
+{
+    "name": "Desafio",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "forwardPorts": [
+        3000,
+        3306
+    ],
+    "initializeCommand": "ls",
+    "mounts": [
+        "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
+    ],
+    "features": {
+        "ghcr.io/devcontainers/features/sshd:1": {}
+    },
+    "remoteUser": "node",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "PKief.material-icon-theme",
+                "yoavbls.pretty-ts-errors",
+                "biomejs.biome",
+                "Prisma.prisma"
+            ]
+        }
+    }
+}
