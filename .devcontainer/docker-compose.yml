@@ -1,5 +1,5 @@
 services:
-  app:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,14 +10,27 @@ services:
       - 3000:3000
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      
+  front:
+      build:
+      context: .
+      dockerfile: Dockerfile
+      volumes:
+      - ../..:/workspaces:cached
+      command: sleep infinity
+      ports:
+      - 3000:3000
+      extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   db:
     image: mysql:8.0
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_DATABASE: db_desafio
-      MYSQL_USER: mysql
+      MYSQL_DATABASE: mysql_frontdoor
+      MYSQL_USER: otware
       MYSQL_PASSWORD: mysql
     volumes:
       - my-mysql-data:/var/lib/mysql

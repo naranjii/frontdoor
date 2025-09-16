@@ -1,5 +1,5 @@
 {
-    "name": "Desafio",
+    "name": "Frontdoor",
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",

@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+model Staff {
+  id          String      @id @default(uuid())
+  name        String
+  password    String
+  role        StaffRole   @default(staff)
+  createdLog  guestRole[] @relation(fields: [signResponsible], references: [])
+}
+
+enum guestRole {
+  Guest
+  Patient
+}
+
+model Guest {
+  id        String    @id @default(uuid())
+  checked   Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  staff     Staff     @relation(fields: []], references: [createdLog])
+  history   Logbook[]
+}
+
+model Patient {
+  id              String    @id @default(uuid())
+  checked         Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  signResponsible Staff     @relation(fields: [], references: [name])
+  history         Logbook[]
+}
+
+model Logbook {
+  id          String   @id @default(uuid())
+  checkIn     DateTime
+  checkOut    DateTime
+  responsible Staff    @relation(fields: [])
+}
+
+enum StaffRole {
+  admin
+  staff
+}
