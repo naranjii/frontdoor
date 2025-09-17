@@ -1,11 +1,12 @@
 {
     "name": "Frontdoor",
     "dockerComposeFile": "docker-compose.yml",
-    "service": "app",
+    "service": "backend",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "forwardPorts": [
         3000,
-        3306
+        3306,
+        5173
     ],
     "initializeCommand": "ls",
     "mounts": [
