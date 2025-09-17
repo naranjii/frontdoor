@@ -5,8 +5,7 @@
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "forwardPorts": [
         3000,
-        3306,
-        5173
+        3306
     ],
     "initializeCommand": "ls",
     "mounts": [
