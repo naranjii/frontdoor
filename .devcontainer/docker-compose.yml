@@ -28,10 +28,12 @@ services:
     ports:
       - "3306:3306"
     environment:
+      MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_DATABASE: mysql_frontdoor
       MYSQL_USER: otware
       MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: mysql_frontdoor
+
     volumes:
       - my-mysql-data:/var/lib/mysql
     restart: unless-stopped
