@@ -1,10 +1,14 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { JwtPayload } from '../interfaces/JwtPayload';
 import { StaffRequest } from '../interfaces/StaffRequest';
 
 // Pending refactor: 'payload as JwtPayLoad' => StaffRequest
+
+export interface StaffJwtPayload {
+  id: number;
+  role: 'ADMIN' | 'STAFF';
+}
 
 dotenv.config();
 export const staffMiddleware = (requiredRole?: 'ADMIN') => {
@@ -17,7 +21,7 @@ export const staffMiddleware = (requiredRole?: 'ADMIN') => {
     const token = authHeader.split(' ')[1];
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+      const payload = jwt.verify(token, process.env.JWT_SECRET!) as StaffJwtPayload;
       req.staff = payload;
       if (requiredRole && payload.role !== requiredRole) {
         return res.status(403).json({ message: 'Acesso limitado ao administrador' });
