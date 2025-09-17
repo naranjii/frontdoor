@@ -9,41 +9,58 @@ datasource db {
 }
 
 model Staff {
-  id          String      @id @default(uuid())
-  name        String
-  password    String
-  role        StaffRole   @default(staff)
-  createdLog  guestRole[] @relation(fields: [signResponsible], references: [])
-}
+  id        Int       @id @default(autoincrement())
+  name      String
+  password  String
+  role      StaffRole @default(staff)
+  createdAt DateTime  @default(now())
 
-enum guestRole {
-  Guest
-  Patient
+  guests    Guest[]
+  patients  Patient[]
+  logbooks  Logbook[]
 }
 
 model Guest {
-  id        String    @id @default(uuid())
-  checked   Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  staff     Staff     @relation(fields: []], references: [createdLog])
-  history   Logbook[]
+  id          String    @id @default(uuid())
+  checked     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  createdById Int
+  createdBy   Staff     @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
+
+  history     Logbook[]
 }
 
 model Patient {
-  id              String    @id @default(uuid())
-  checked         Boolean   @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  signResponsible Staff     @relation(fields: [], references: [name])
-  history         Logbook[]
+  id           String    @id @default(uuid())
+  patientCode  Int
+  supportLevel Int
+  checked      Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  createdById  Int
+  createdBy    Staff     @relation(fields: [createdById], references: [id], map: "Patient_createdBy_fkey")
+
+  history      Logbook[]
 }
 
 model Logbook {
   id          String   @id @default(uuid())
-  checkIn     DateTime
+  checkIn     DateTime @default(now())
   checkOut    DateTime
-  responsible Staff    @relation(fields: [])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  createdById Int
+  createdBy   Staff    @relation(fields: [createdById], references: [id], map: "Logbook_createdBy_fkey")
+
+  guestId     String? 
+  guest       Guest?   @relation(fields: [guestId], references: [id], map: "Logbook_guest_fkey")
+
+  patientId   String?
+  patient     Patient? @relation(fields: [patientId], references: [id], map: "Logbook_patient_fkey")
 }
 
 enum StaffRole {
