@@ -1,5 +1,4 @@
 import { prisma } from "../config/db";
-import { Patient } from "@prisma/client";
 
 interface CreatePatientDTO {
   patientCode: number;

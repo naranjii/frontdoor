@@ -1,5 +1,5 @@
 import { prisma } from "../config/db";
-import { Guest } from "@prisma/client";
+import { Guest } from "../generated/prisma";
 
 interface CreateGuestDTO {
   createdById: number;
