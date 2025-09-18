@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import * as StaffService from "../services/StaffService";
 
-export async function register(req: Request, res: Response) {
+export async function staffRegister(req: Request, res: Response) {
   const { data } = req.body;
   try {
     const staff = await StaffService.register(data);
