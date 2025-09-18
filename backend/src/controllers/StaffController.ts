@@ -1,0 +1,30 @@
+import { Request, Response } from "express";
+import * as StaffService from "../services/StaffService";
+import { StaffRepository } from "../repositories/staffRepository";
+
+export class StaffController {
+  static async registerStaff(req: Request, res: Response) {
+    const { name, password } = req.body;
+    try {
+      const staff = await StaffService.register({name, password});
+      res.status(201).json(staff);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message });
+    }
+  }
+
+  static async login(req: Request, res: Response) {
+    const { name, password } = req.body;
+    try {
+      const token = await StaffService.login(name, password);
+      res.json({ token });
+    } catch (err: any) {
+      res.status(401).json({ error: err.message });
+    }
+  }
+
+  static async list() {
+    return StaffRepository.findAll()
+  }
+
+}

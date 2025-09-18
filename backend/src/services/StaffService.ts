@@ -2,7 +2,6 @@ import * as bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { StaffRepository } from "../repositories/staffRepository";
 import { error } from "console";
-import { hashPassword } from "../utils/password";
 
 export async function register({
   name,

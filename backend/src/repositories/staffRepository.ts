@@ -15,6 +15,11 @@ export const StaffRepository = {
     return result;
   },
 
+  async findAll(){
+    return prisma.staff.findMany();
+  },
+
+
   async findByName(name: string) {
     return prisma.staff.findUnique({ where: { name } });
   },
