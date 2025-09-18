@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import * as StaffService from "../services/StaffService";
 
 export async function register(req: Request, res: Response) {
-  const { name, password } = req.body;
+  const { data } = req.body;
   try {
-    const staff = await StaffService.register(name, password);
+    const staff = await StaffService.register(data);
     res.status(201).json(staff);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
