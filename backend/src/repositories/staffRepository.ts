@@ -1,15 +1,14 @@
-import { Router, Request, Response } from 'express';
+import { prisma } from "../config/db";
 
-const router = Router();
+export const StaffRepository = {
+	async create({ name, hashedPassword }: { name: string; hashedPassword: string }) {
+		return prisma.staff.create({
+			data: { name, password: hashedPassword },
+			select: { id: true, name: true, role: true, createdAt: true },
+		});
+	},
 
-// GET /staff
-router.get('/', (req: Request, res: Response) => {
-  res.send('List of staff');
-});
-
-// POST /staff
-router.post('/', (req: Request, res: Response) => {
-  res.send('Create staff member');
-});
-
-export default router;
+	async findByName(name: string) {
+		return prisma.staff.findUnique({ where: { name } });
+	},
+};
