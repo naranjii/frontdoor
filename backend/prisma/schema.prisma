@@ -38,6 +38,7 @@ model Patient {
   patientCode  Int
   supportLevel Int
   checked      Boolean   @default(true)
+  driveLink    String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
