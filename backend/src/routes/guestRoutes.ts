@@ -8,7 +8,7 @@ const router = Router();
 router.post("/", staffMiddleware(), GuestController.create);
 
 // List all Guests
-router.get("/", staffMiddleware(), GuestController.getAll);
+router.get("/", GuestController.getAll);
 
 // Get Guest by ID
 router.get("/:id", staffMiddleware(), GuestController.getById);

@@ -29,6 +29,9 @@ importers:
       mysql:
         specifier: ^2.18.1
         version: 2.18.1
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@24.3.1)(typescript@5.9.2)
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
