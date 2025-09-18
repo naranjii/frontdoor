@@ -1,15 +1,22 @@
-import { Router } from 'express';
-import { staffMiddleware } from '../middlewares/staffMiddleware';
+import { Router } from "express";
+import { PatientController } from "../controllers/PatientController";
+import { staffMiddleware } from "../middlewares/staffMiddleware";
 
 const router = Router();
-router.use(staffMiddleware())
 
-router.get('/', listPatient)
-router.get('/:id', infoPatient)
+// Create Patient
+router.post("/", staffMiddleware(), PatientController.create);
 
-router.post('/', registerPatient)
+// List Patients (supports filters via query params)
+router.get("/", staffMiddleware(), PatientController.getAll);
 
-router.put('/:id', staffMiddleware('ADMIN'), updatePatient)
+// Get Patient by ID
+router.get("/:id", staffMiddleware(), PatientController.getById);
 
-router.delete('/:id', staffMiddleware('ADMIN'), deletePatient)
+// Update Patient
+router.put("/:id", staffMiddleware(), PatientController.update);
+
+// Delete Patient
+router.delete("/:id", staffMiddleware(), PatientController.remove);
+
 export default router;
