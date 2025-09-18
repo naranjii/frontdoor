@@ -1,4 +1,5 @@
-export async function listPatient(req: Request, res: Response) {
+import { Request, Response } from "express";
+export async function registerStaff(req: Request, res: Response) {
   const { data } = req.body;
   try {
     const staff = await StaffService.register(data);
@@ -6,3 +7,5 @@ export async function listPatient(req: Request, res: Response) {
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
+}
+
