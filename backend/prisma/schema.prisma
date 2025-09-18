@@ -35,6 +35,8 @@ model Guest {
 
 model Patient {
   id           String    @id @default(uuid())
+  name         String
+  healthcare   String
   patientCode  Int
   supportLevel Int
   checked      Boolean   @default(true)
