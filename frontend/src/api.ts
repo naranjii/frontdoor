@@ -1,21 +1,72 @@
+// /frontend/src/api/api.ts
 import axios from 'axios';
 
+const API_BASE = import.meta.env.VITE_API_URL || '3000';
+
+// Helper to get JWT from localStorage
+const getToken = () => localStorage.getItem('token');
+
+// Create an axios instance
 const api = axios.create({
-  baseURL: '/api', // will hit the proxy
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: API_BASE,
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Example endpoints
-export const getUsers = async () => {
-  const res = await api.get('/users');
-  return res.data;
+// Attach JWT to every request if available
+api.interceptors.request.use(config => {
+  const token = getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Optional: redirect to login on 401
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ================= Staff API =================
+export const staffAPI = {
+  register: (data: { name: string; password: string; role: 'ADMIN' | 'STAFF' }) =>
+    api.post('/staff/register', data),
+  login: (data: { name: string; password: string }) => api.post('/staff/login', data),
+  getAll: () => api.get('/staff'),
 };
 
-export const createUser = async (userData: { name: string; email: string }) => {
-  const res = await api.post('/users', userData);
-  return res.data;
+// ================= Patient API =================
+export const patientAPI = {
+  create: (data: { name: string; healthcare: string; age?: number }) => api.post('/patients', data),
+  getAll: (filters?: { name?: string; healthcare?: string }) => api.get('/patients', { params: filters }),
+  getById: (id: string) => api.get(`/patients/${id}`),
+  update: (id: string, data: { name?: string; healthcare?: string; age?: number }) =>
+    api.put(`/patients/${id}`, data),
+  delete: (id: string) => api.delete(`/patients/${id}`),
 };
 
-export default api;
+// ================= Guest API =================
+export const guestAPI = {
+  create: (data: { name: string; note?: string }) => api.post('/guests', data),
+  getAll: (filters?: { name?: string }) => api.get('/guests', { params: filters }),
+  getById: (id: string) => api.get(`/guests/${id}`),
+  update: (id: string, data: { name?: string; note?: string }) => api.put(`/guests/${id}`, data),
+  delete: (id: string) => api.delete(`/guests/${id}`),
+};
+
+// ================= Logbook API =================
+export const logbookAPI = {
+  create: (data: { staffId: string; patientId?: string; guestId?: string; action: string }) =>
+    api.post('/logbook', data),
+  getAll: (filters?: { staffId?: string; patientId?: string; guestId?: string }) =>
+    api.get('/logbook', { params: filters }),
+  getById: (id: string) => api.get(`/logbook/${id}`),
+  update: (id: string, data: { action?: string; staffId?: string; patientId?: string; guestId?: string }) =>
+    api.put(`/logbook/${id}`, data),
+  delete: (id: string) => api.delete(`/logbook/${id}`),
+};

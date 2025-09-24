@@ -4,6 +4,7 @@
     "service": "backend",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "forwardPorts": [
+        5173,
         3000,
         3306
     ],
