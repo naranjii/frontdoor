@@ -4,7 +4,7 @@ This repository delivers the **Front Desk Dashboard**, currently implemented as 
 
 ---
 
-## 🎯 Purpose
+## Purpose
 
 - Provides reception staff with tools for **check-in**, appointment workflows, and daily agenda management.
 - Operates independently in this repository.
@@ -12,7 +12,7 @@ This repository delivers the **Front Desk Dashboard**, currently implemented as 
 
 ---
 
-## 🚀 Roadmap for `frontdoor`
+## Roadmap for `frontdoor`
 
 ### Phase 1 – Core Reception Workflow (current)
 - Patient check-in UI and backend CRUD operations.
