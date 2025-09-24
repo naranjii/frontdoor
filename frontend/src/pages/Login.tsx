@@ -22,22 +22,20 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-secondary flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-xl">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
             <Building2 className="w-8 h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Welcome to Frontdoor</h1>
-          <p className="text-muted-foreground">Sign in to access your dashboard</p>
+          <h1 className="text-3xl text-cyan-500 font-bold text-foreground">Bem-vindo!</h1>
         </div>
 
         {/* Login Card */}
         <Card className="border-border/50 shadow-medium">
           <CardHeader>
-            <CardTitle>Login</CardTitle>
             <CardDescription>
-              Entre suas credenciais para acessar a plataforma
+              Entre as credenciais fornecidas pelo seu administrador para acessar a plataforma
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -56,7 +54,7 @@ export default function Login() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Senha</Label>
                 <Input
                   id="password"
                   type="password"
