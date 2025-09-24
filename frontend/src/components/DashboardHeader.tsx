@@ -19,8 +19,8 @@ export const DashboardHeader = ({ onCheckIn }: DashboardHeaderProps) => {
               <span className="text-primary-foreground font-bold text-lg">F</span>
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-foreground">Front Desk Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Manage check-ins and registrations</p>
+              <h1 className="text-xl font-semibold text-foreground">Painel da Recepção</h1>
+              <p className="text-sm text-muted-foreground">Controle de check-in e cadastros</p>
             </div>
           </div>
         </div>
