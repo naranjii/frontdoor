@@ -16,33 +16,6 @@ const mockLogbookEntries = [
     category: "Patient",
     purpose: "Routine Checkup",
     status: "completed"
-  },
-  {
-    id: 2,
-    timestamp: "2024-01-15 10:15:00",
-    type: "check-in",
-    name: "Maria Garcia",
-    category: "Guest",
-    purpose: "Visiting Patient",
-    status: "in-progress"
-  },
-  {
-    id: 3,
-    timestamp: "2024-01-15 11:00:00",
-    type: "check-out",
-    name: "David Johnson",
-    category: "Patient",
-    purpose: "Physical Therapy",
-    status: "completed"
-  },
-  {
-    id: 4,
-    timestamp: "2024-01-15 11:30:00",
-    type: "check-in",
-    name: "Sarah Wilson",
-    category: "Patient",
-    purpose: "Consultation",
-    status: "waiting"
   }
 ];
 
@@ -78,12 +51,12 @@ export const LogbookView = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-foreground">Logbook</h2>
+        <h2 className="text-2xl font-semibold text-foreground">Controle de Visitantes</h2>
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Search entries..."
+              placeholder="Procurar entrada..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 w-64 transition-smooth"
@@ -91,14 +64,14 @@ export const LogbookView = () => {
           </div>
           <Button variant="outline" className="transition-smooth">
             <Filter className="mr-2 h-4 w-4" />
-            Filters
+            Filtros
           </Button>
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-muted/50">
-          <TabsTrigger value="all" className="transition-smooth">All Entries</TabsTrigger>
+          <TabsTrigger value="all" className="transition-smooth">Todos</TabsTrigger>
           <TabsTrigger value="check-ins" className="transition-smooth">Check-ins</TabsTrigger>
           <TabsTrigger value="check-outs" className="transition-smooth">Check-outs</TabsTrigger>
         </TabsList>
