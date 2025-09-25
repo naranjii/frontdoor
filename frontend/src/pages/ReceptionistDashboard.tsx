@@ -34,37 +34,16 @@ export default function ReceptionistDashboard() {
   const [searchTerm, setSearchTerm] = useState("")
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
 
-    const renderActiveView = () => {
-      switch (activeView) {
-        case "logbook":
-          return <LogbookView />;
-        case "registrations":
-          return <RegistrationsView />;
-        default:
-          return <LogbookView />;
-      }
-    };
-
-
-
-
-
   const mockPatients = [
     { id: 1, name: "John Doe", phone: "(555) 123-4567", lastVisit: "2024-01-10", status: "active" },
-    { id: 2, name: "Jane Smith", phone: "(555) 234-5678", lastVisit: "2024-01-08", status: "active" },
-    { id: 3, name: "Bob Johnson", phone: "(555) 345-6789", lastVisit: "2023-12-15", status: "inactive" }
   ]
 
   const mockQueue = [
-    { id: 1, name: "John Doe", type: "Paciente", time: "10:30 AM", status: "waiting", therapist: "Dr. Sarah Johnson" },
-    { id: 2, name: "Jane Smith", type: "Visitante", time: "10:45 AM", status: "processing", purpose: "Consulta" },
-    { id: 3, name: "Bob Johnson", type: "Paciente", time: "11:00 AM", status: "waiting", therapist: "Dr. Mike Chen" }
+    { id: 1, name: "John Doe", type: "Paciente", time: "10:30 AM", status: "waiting", therapist: "Dr. Sarah Johnson", purpose: "Joining to chega junto" },
   ]
 
   const mockExpectedArrivals = [
     { id: 1, name: "Alice Brown", time: "11:30 AM", therapist: "Dr. Sarah Johnson", type: "Fisioterapia" },
-    { id: 2, name: "Charlie Davis", time: "12:00 PM", therapist: "Dr. Lisa Roberts", type: "Terapia da Fala" },
-    { id: 3, name: "Emma Wilson", time: "12:30 PM", therapist: "Dr. Mike Chen", type: "Terapia Ocupacional" }
   ]
 
   const filteredPatients = mockPatients.filter(patient =>
@@ -85,14 +64,14 @@ export default function ReceptionistDashboard() {
     }
   }
   return (
-
-    <div className="min-h-screen bg-gradient-secondary">
-      <SidebarProvider>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gradient-secondary">
         {/* Sidebar */}
         <AppSidebar activeView={activeView} setActiveView={setActiveView} />
         {/* Header */}
-        <div className="container mx-auto p-6 space-y-6">
+        <div className="outline-double outline-cyan-300/50 bg-cyan-100/10 container w-full p-6 space-y-6">
           <DashboardHeader onCheckIn={() => setIsCheckInOpen(true)} />
+
           {/* Stats Cards */}
           <div className="grid md:grid-cols-4 gap-6">
             <Card>
@@ -306,7 +285,8 @@ export default function ReceptionistDashboard() {
           open={isCheckInOpen}
           onOpenChange={setIsCheckInOpen}
         />
-      </SidebarProvider>
-    </div>
+      </div>
+    </SidebarProvider>
+
   )
 }
