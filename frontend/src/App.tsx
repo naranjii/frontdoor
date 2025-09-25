@@ -23,7 +23,7 @@ const App = () => (
           <Route path="/land" element={<Landing />} />
           <Route path="/dashie" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>}/>
+          <Route path="/dashboard" element={<ProtectedRoute><ReceptionistDashboard/></ProtectedRoute>}/>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

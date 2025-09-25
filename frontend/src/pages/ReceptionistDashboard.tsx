@@ -23,13 +23,14 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { CheckInModal } from "@/components/CheckInModal"
+import { DashboardHeader } from "@/components/DashboardHeader"
 
 interface DashboardHeaderProps {
   onCheckIn: () => void;
 }
 
 
-export default function ReceptionistDashboard({ onCheckIn }: DashboardHeaderProps) {
+export default function ReceptionistDashboard() {
   const [searchTerm, setSearchTerm] = useState("")
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
   const getName = () => localStorage.getItem('name');
@@ -77,32 +78,8 @@ export default function ReceptionistDashboard({ onCheckIn }: DashboardHeaderProp
   return (
     <div className="min-h-screen bg-gradient-secondary">
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <Building2 className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold text-foreground">Hospidata</h1>
-            </Link>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-primary text-primary-foreground">{username}</Badge>
-              <div className="flex items-center gap-3">
-                <Button
-                  onClick={onCheckIn}
-                  className="bg-gradient-primary text-primary-foreground hover:shadow-glow transition-all duration-300 font-medium px-6"
-                >
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Check In
-                </Button>
-                <Button variant="outline" size="icon" className="transition-smooth">
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </div>
+          <DashboardHeader onCheckIn={() => setIsCheckInOpen(true)} />
 
-            </div>
-          </div>
-        </div>
-      </header>
 
       <div className="container mx-auto p-6 space-y-6">
         {/* Stats Cards */}
