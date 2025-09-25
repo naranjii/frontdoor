@@ -7,7 +7,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import { Dashboard } from "./components/Dashboard";
+import { Dashboard } from "./pages/Dashboard";
 const queryClient = new QueryClient();
 
 const App = () => (
