@@ -69,7 +69,7 @@ export default function ReceptionistDashboard() {
         {/* Sidebar */}
         <AppSidebar activeView={activeView} setActiveView={setActiveView} />
         {/* Header */}
-        <div className="outline-double outline-cyan-300/50 bg-cyan-100/10 container w-full p-6 space-y-6">
+        <div className="border-2 border-cyan-300/30 rounded-b-[40px] outline-double outline-cyan-100/80 container w-full p-6 space-y-6">
           <DashboardHeader onCheckIn={() => setIsCheckInOpen(true)} />
 
           {/* Stats Cards */}
