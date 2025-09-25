@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ReceptionistDashboard from "./pages/ReceptionistDashboard";
 import { Dashboard } from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
@@ -20,8 +21,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/land" element={<Landing />} />
+          <Route path="/dashie" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+          <Route path="/dashboard" element={<ProtectedRoute><ReceptionistDashboard /></ProtectedRoute>}/>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

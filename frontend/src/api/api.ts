@@ -12,7 +12,7 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach JWT to every request if available
+// Attach JWT && USERNAME to every request if available
 api.interceptors.request.use(config => {
   const token = getToken();
   if (token) {

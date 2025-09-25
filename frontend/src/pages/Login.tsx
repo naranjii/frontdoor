@@ -25,6 +25,7 @@ export default function Login() {
         try {
             const { data } = await staffAPI.login({ name: name, password })
             localStorage.setItem("token", data.token)
+            localStorage.setItem("username", data.name)
             toast.success("Login bem-sucedido!")
             navigate("/dashboard")
         } catch (error) {
