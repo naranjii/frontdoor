@@ -34,7 +34,7 @@ export const Dashboard = () => {
           </main>
           
           <footer className="border-t bg-card p-4 text-center text-sm text-muted-foreground">
-            © 2024 OTWare. All rights reserved.
+            © 2025 OTWare. All rights reserved.
           </footer>
         </div>
         

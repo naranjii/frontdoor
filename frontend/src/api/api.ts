@@ -1,7 +1,7 @@
 // /frontend/src/api/api.ts
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || 3000;
+const API_BASE = import.meta.env.VITE_API_URL;
 
 // Helper to get JWT from localStorage
 const getToken = () => localStorage.getItem('token');
