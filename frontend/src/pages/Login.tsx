@@ -15,6 +15,8 @@ export default function Login() {
     const navigate = useNavigate()
 
     const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
         if (!name || !password) {
             toast.error("Por favor preencha todos os campos")
             return
