@@ -1,7 +1,7 @@
 // /frontend/src/api/api.ts
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || '3000';
+const API_BASE = import.meta.env.VITE_API_URL || 3000;
 
 // Helper to get JWT from localStorage
 const getToken = () => localStorage.getItem('token');
@@ -20,17 +20,6 @@ api.interceptors.request.use(config => {
   }
   return config;
 });
-
-// Optional: redirect to login on 401
-api.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response?.status === 401) {
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
 
 // ================= Staff API =================
 export const staffAPI = {

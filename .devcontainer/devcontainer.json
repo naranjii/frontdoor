@@ -1,13 +1,8 @@
 {
     "name": "Frontdoor",
     "dockerComposeFile": "docker-compose.yml",
-    "service": "backend",
+    "service": "app",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-    "forwardPorts": [
-        5173,
-        3000,
-        3306
-    ],
     "initializeCommand": "ls",
     "mounts": [
         "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"

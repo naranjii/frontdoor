@@ -1,6 +1,5 @@
 services:
-
-  backend:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,18 +8,6 @@ services:
     command: sleep infinity
     ports:
       - 3000:3000
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-      
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: sleep infinity
-    ports:
-      - "5173:5173" # exemplo Vite
-    volumes:
-      - ..:/workspaces:cached
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

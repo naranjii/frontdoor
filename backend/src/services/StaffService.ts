@@ -2,16 +2,19 @@ import * as bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { StaffRepository } from "../repositories/staffRepository";
 import { error } from "console";
+import { StaffRole } from '../generated/prisma';
 
 export async function register({
   name,
-  password
+  password,
+  role
 }: {
   name: string;
   password: string;
+  role: StaffRole
 }) {
   const hashedPassword = await bcrypt.hash(password, 10);
-  return StaffRepository.create({ name, hashedPassword });
+  return StaffRepository.create({ name, hashedPassword, role });
 }
 
 export async function login(name: string, password: string) {
