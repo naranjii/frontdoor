@@ -10,22 +10,21 @@ import { staffAPI } from "@/api/api"
 import { AxiosError } from "axios"
 
 export default function Login() {
-    const [name, setName] = useState("")
+    const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (!name || !password) {
+        if (!username || !password) {
             toast.error("Por favor preencha todos os campos")
             return
         }
 
         try {
-            const { data } = await staffAPI.login({ name: name, password })
+            const { data } = await staffAPI.login({ username: username, password })
             localStorage.setItem("token", data.token)
-            localStorage.setItem("username", data.name)
             toast.success("Login bem-sucedido!")
             navigate("/dashboard")
         } catch (error) {
@@ -60,11 +59,11 @@ export default function Login() {
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Nome de Usuário</Label>
                                     <Input
-                                        id="name"
-                                        type="name"
+                                        id="username"
+                                        type="username"
                                         placeholder="Seunomedeusuario@instituicao"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
                                         required
                                     />
                                 </div>
