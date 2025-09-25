@@ -10,62 +10,62 @@ datasource db {
 
 model Staff {
   id        Int       @id @default(autoincrement())
-  name      String    @unique
+  username  String    @unique
+  name      String
   password  String
   role      StaffRole @default(STAFF)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  guests    Guest[]
-  patients  Patient[]
-  logbooks  Logbook[]
+  guests   Guest[]
+  patients Patient[]
+  logbooks Logbook[]
 }
 
 model Guest {
-  id          String    @id @default(uuid())
-  checked     Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String   @id @default(uuid())
+  checked   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   createdById Int
-  createdBy   Staff     @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
+  createdBy   Staff @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
 
-  history     Logbook[]
+  history Logbook[]
 }
 
 model Patient {
-  id           String    @id @default(uuid())
+  id           String   @id @default(uuid())
   name         String
   healthcare   String
   patientCode  Int
   supportLevel Int
-  checked      Boolean   @default(true)
+  checked      Boolean  @default(true)
   driveLink    String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
+  createdById Int
+  createdBy   Staff @relation(fields: [createdById], references: [id], map: "Patient_createdBy_fkey")
 
-  createdById  Int
-  createdBy    Staff     @relation(fields: [createdById], references: [id], map: "Patient_createdBy_fkey")
-
-  history      Logbook[]
+  history Logbook[]
 }
 
 model Logbook {
-  id          String   @id @default(uuid())
-  checkIn     DateTime @default(now())
-  checkOut    DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  checkIn   DateTime @default(now())
+  checkOut  DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   createdById Int
-  createdBy   Staff    @relation(fields: [createdById], references: [id], map: "Logbook_createdBy_fkey")
+  createdBy   Staff @relation(fields: [createdById], references: [id], map: "Logbook_createdBy_fkey")
 
-  guestId     String? 
-  guest       Guest?   @relation(fields: [guestId], references: [id], map: "Logbook_guest_fkey")
+  guestId String?
+  guest   Guest?  @relation(fields: [guestId], references: [id], map: "Logbook_guest_fkey")
 
-  patientId   String?
-  patient     Patient? @relation(fields: [patientId], references: [id], map: "Logbook_patient_fkey")
+  patientId String?
+  patient   Patient? @relation(fields: [patientId], references: [id], map: "Logbook_patient_fkey")
 }
 
 enum StaffRole {

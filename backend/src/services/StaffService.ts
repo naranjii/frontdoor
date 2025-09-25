@@ -5,20 +5,22 @@ import { error } from "console";
 import { StaffRole } from '../generated/prisma';
 
 export async function register({
+  username,
   name,
   password,
   role
 }: {
+  username: string;
   name: string;
   password: string;
   role: StaffRole
 }) {
   const hashedPassword = await bcrypt.hash(password, 10);
-  return StaffRepository.create({ name, hashedPassword, role });
+  return StaffRepository.create({ username, name, hashedPassword, role });
 }
 
-export async function login(name: string, password: string) {
-	const staff = await StaffRepository.findByName(name);
+export async function login(username: string, password: string) {
+	const staff = await StaffRepository.findByUsername(username);
 	if (!staff) throw error("Nome de usuário ou senha inválido");
 	const valid = await bcrypt.compare(password, staff.password);
 	if (!valid) throw error("Nome de usuário ou senha inválido");

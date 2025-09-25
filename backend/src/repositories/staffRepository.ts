@@ -2,15 +2,16 @@ import { prisma } from "../config/db";
 import { Staff, StaffRole } from "../generated/prisma";
 
 interface CreateStaffDTO {
+  username: string;
   name: string;
   hashedPassword: string;
   role: StaffRole;
 }
 
 export const StaffRepository = {
-  async create({ name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
+  async create({ username, name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
     const staff = await prisma.staff.create({
-      data: { name, password: hashedPassword, role },
+      data: { username, name, password: hashedPassword, role },
     });
     const { password, ...result } = staff;
     return result;
@@ -21,8 +22,8 @@ export const StaffRepository = {
   },
 
 
-  async findByName(name: string) {
-    return prisma.staff.findUnique({ where: { name } });
+  async findByUsername(username: string) {
+    return prisma.staff.findUnique({ where: { username } });
   },
 
   async findById(id: number) {
