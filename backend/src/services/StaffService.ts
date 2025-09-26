@@ -19,7 +19,7 @@ export async function register({
 	return StaffRepository.create({ username, name, hashedPassword, role });
 }
 
-export async function login(username: string, password: string) {
+export async function login(username: string, password: string, role: StaffRole) {
 	const staff = await StaffRepository.findByUsername(username);
 	if (!staff) throw error("Nome de usuário ou senha inválido");
 	const valid = await bcrypt.compare(password, staff.password);

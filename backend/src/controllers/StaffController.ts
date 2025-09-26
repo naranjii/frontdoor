@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as StaffService from "../services/StaffService";
 import { StaffRepository } from "../repositories/staffRepository";
+import { StaffRole } from "../generated/prisma";
 
 export class StaffController {
   static async registerStaff(req: Request, res: Response) {
@@ -14,9 +15,9 @@ export class StaffController {
   }
 
   static async login(req: Request, res: Response) {
-    const { username, password } = req.body;
+    const { username, password, role } = req.body;
     try {
-      const token = await StaffService.login(username, password);
+      const token = await StaffService.login(username, password, role);
       res.json({ token });
     } catch (err: any) {
       res.status(401).json({ error: err.message });

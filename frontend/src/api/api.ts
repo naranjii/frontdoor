@@ -22,7 +22,7 @@ api.interceptors.request.use(config => {
 export const staffAPI = {
   register: (data: { username: string, name: string; password: string; role: 'ADMIN' | 'STAFF' }) =>
     api.post('/staff/register', data),
-  login: (data: { username: string; password: string }) => api.post('/staff/login', data),
+  login: (data: { username: string; password: string;  }) => api.post('/staff/login', data),
   getAll: () => api.get('/staff'),
 };
 

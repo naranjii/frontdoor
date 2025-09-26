@@ -14,7 +14,6 @@ import { ReceptionTabs } from "@/components/ReceptionTabs"
 export default function ReceptionistDashboard() {
   const [activeView, setActiveView] = useState("logbook");
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("")
   const mockQueue = [
     { id: 1, name: "John Doe", type: "Paciente", time: "10:30 AM", status: "waiting", therapist: "Dr. Sarah Johnson", purpose: "Joining to chega junto" },
   ]
