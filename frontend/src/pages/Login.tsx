@@ -16,10 +16,6 @@ export default function Login() {
     const [password, setPassword] = useState("")
     const auth = useContext(AuthContext)
 
-    if (!auth) {
-      throw new Error("AuthContext must be used within AuthProvider")
-    }
-
     const { login, logout } = auth
 
     useEffect(() => {
@@ -44,7 +40,7 @@ export default function Login() {
               data?.token ?? data?.accessToken ?? (typeof data === "string" ? data : undefined)
 
             if (!tokenFromResponse || typeof tokenFromResponse !== "string") {
-                toast.error("Resposta inválida do servidor ao efetuar login")
+                toast.error("Resposta inválida do servidor ao efetuar login. Contate o Administrador.")
                 return
             }
 
@@ -53,7 +49,7 @@ export default function Login() {
             navigate("/dashboard")
         } catch (error) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data?.message || "Falha ao fazer login")
+                toast.error(error.response?.data?.message || "Credenciais inválidas")
             } else {
                 toast.error("Erro inesperado. Tente novamente.")
             }
@@ -111,7 +107,7 @@ export default function Login() {
 
                         <div className="mt-6 text-center">
                             <p className="text-sm text-muted-foreground">
-                                Precisa de ajuda? Contate o administrador do seu sistema
+                                Precisa de ajuda? Contate o suporte
                             </p>
                         </div>
                     </CardContent>
