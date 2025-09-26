@@ -96,10 +96,9 @@ export default function ReceptionistDashboard() {
 
           <Tabs defaultValue="queue" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="queue">Fila Atual</TabsTrigger>
-              <TabsTrigger value="expected">Chegadas Esperadas</TabsTrigger>
-              <TabsTrigger value="patients">Buscar Paciente</TabsTrigger>
-              <TabsTrigger value="logbook">Registro de Hoje</TabsTrigger>
+              <TabsTrigger value="logbook">Registro de Acessos</TabsTrigger>
+              <TabsTrigger value="expected">Check In Agendado</TabsTrigger>
+              <TabsTrigger value="patients">Buscar Cadastro</TabsTrigger>
             </TabsList>
 
             {/* Current Queue */}
