@@ -3,31 +3,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Link } from "react-router-dom"
 import {
   Users,
-  UserPlus,
   Clock,
   Search,
-  Plus,
   FileText,
   QrCode,
-  Building2,
-  UserCheck,
-  Activity,
-  Settings
 } from "lucide-react"
-import { toast } from "sonner"
 import { CheckInModal } from "@/components/CheckInModal"
 import { DashboardHeader } from "@/components/DashboardHeader"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
-import { LogbookView } from "@/components/LogbookView"
-import { RegistrationsView } from "@/components/RegistrationsView"
 
 export default function ReceptionistDashboard() {
   const [activeView, setActiveView] = useState("logbook");
@@ -73,48 +60,36 @@ export default function ReceptionistDashboard() {
           <DashboardHeader onCheckIn={() => setIsCheckInOpen(true)} />
 
           {/* Stats Cards */}
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardHeader className="flex items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Check-ins de Hoje</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">24</div>
-                <p className="text-xs text-muted-foreground">+12% em relação a ontem</p>
+                <div className="text-2xl font-bold text-center">24</div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardHeader className="flex items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Fila Atual</CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{mockQueue.length}</div>
+                <div className="text-2xl font-bold text-center">{mockQueue.length}</div>
                 <p className="text-xs text-muted-foreground">Pessoas aguardando</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Chegadas Esperadas</CardTitle>
+              <CardHeader className="flex  items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium ">Chegadas Esperadas</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{mockExpectedArrivals.length}</div>
+                <div className="text-2xl font-bold text-center">{mockExpectedArrivals.length}</div>
                 <p className="text-xs text-muted-foreground">Próximas 2 horas</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Tempo Médio de Espera</CardTitle>
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">12 min</div>
-                <p className="text-xs text-success">Abaixo da meta</p>
               </CardContent>
             </Card>
           </div>
