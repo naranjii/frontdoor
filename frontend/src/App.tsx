@@ -22,7 +22,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/land" element={<Landing />} />
-            <Route path="/dashie" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route
               path="/dashboard"
