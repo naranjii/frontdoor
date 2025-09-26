@@ -5,18 +5,18 @@ import { error } from "console";
 import { StaffRole } from '../generated/prisma';
 
 export async function register({
-  username,
-  name,
-  password,
-  role
+	username,
+	name,
+	password,
+	role
 }: {
-  username: string;
-  name: string;
-  password: string;
-  role: StaffRole
+	username: string;
+	name: string;
+	password: string;
+	role: StaffRole
 }) {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return StaffRepository.create({ username, name, hashedPassword, role });
+	const hashedPassword = await bcrypt.hash(password, 10);
+	return StaffRepository.create({ username, name, hashedPassword, role });
 }
 
 export async function login(username: string, password: string) {
@@ -31,4 +31,8 @@ export async function login(username: string, password: string) {
 			expiresIn: "1h",
 		},
 	);
+}
+
+export async function list() {
+	return StaffRepository.findAll();
 }

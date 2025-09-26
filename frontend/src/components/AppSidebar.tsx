@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { id: "logbook", title: "Registro de Acessos", icon: FileText },
-  { id: "registrations", title: "Check In Agendado", icon: UserPlus },
+  { id: "logbook", title: "Livro de Entradas e Saídas", icon: FileText },
+  { id: "registrations", title: "Agendamentos", icon: UserPlus },
   { id: "client-log", title: "Cadastros", icon: Users },
 ];
 

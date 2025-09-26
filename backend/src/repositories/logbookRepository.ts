@@ -1,11 +1,10 @@
 import { prisma } from "../config/db";
-import { Logbook } from "../generated/prisma";
 
 interface CreateLogDTO {
   createdById: number;
   guestId?: string;
   patientId?: string;
-  checkOut?: Date;
+  checkOut: Date;
 }
 
 interface UpdateLogDTO {

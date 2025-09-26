@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { getStatusColor } from "./helper";
 import { Input } from "./ui/input";
+import { logbookAPI } from "@/api/api";
 
 export function ReceptionTabs() {
     const [isCheckInOpen, setIsCheckInOpen] = useState(false);
@@ -34,63 +35,56 @@ export function ReceptionTabs() {
                 <TabsTrigger
                     value="logbook"
                     className="
-        p-1 py-3 rounded-t-lg text-slate-500
+        py-1 rounded-t-lg text-slate-800
         border-x border-t border-gray-400
         data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
-        hover:bg-gradient-to-r hover:from-cyan-600 hover:to-cyan-500 hover:text-cyan-200/90
         bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
+        hover:shadow-md hover:shadow-cyan-700/10 hover:bg-cyan-600/10
         transition-discrete duration-500      
         data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
                 >
-                    Registro de Acessos
+                    Livro de Entradas e Saídas
                 </TabsTrigger>
 
                 <TabsTrigger
                     value="expected"
                     className="
-        p-1 py-3 rounded-t-lg text-slate-500
+        py-1 rounded-t-lg text-slate-800
         border-x border-t border-gray-400
         data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
-        hover:bg-gradient-to-r hover:from-cyan-600 hover:to-cyan-500 hover:text-cyan-200/90
         bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
+        hover:shadow-md hover:shadow-cyan-700/10 hover:bg-cyan-600/10
         transition-discrete duration-900     
         data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
                 >
-                    Check In Agendado
+                    Agendamentos
                 </TabsTrigger>
 
                 <TabsTrigger
                     value="patients"
                     className="
-        p-1 py-3 rounded-t-lg text-slate-500
+        py-1 rounded-t-lg text-slate-800
         border-x border-t border-gray-400
         data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
-        hover:bg-gradient-to-r hover:from-cyan-600 hover:to-cyan-500 hover:text-cyan-200/90
         bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
+        hover:shadow-md hover:shadow-cyan-700/10 hover:bg-cyan-600/10
         transition-discrete duration-500      
         data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
                 >
-                    Buscar Cadastro
+                    Cadastros
                 </TabsTrigger>
             </TabsList>
 
             {/* Logbook */}
             <TabsContent value="logbook" className="space-y-6">
-                <h2 className="text-xl font-semibold">Registro de Hoje</h2>
-
                 <Card>
                     <CardHeader>
-                        <CardTitle>Registro de Check-ins/Check-outs</CardTitle>
-                        <CardDescription>Acompanhamento em tempo real dos visitantes de hoje</CardDescription>
+                        <CardTitle>Livro de Entradas e Saídas</CardTitle>
+                        <CardDescription>Histórico de entradas e saídas do prédio</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {[
-                                { name: "John Doe", action: "Check-in", time: "09:30 AM", type: "Paciente" },
-                                { name: "Jane Smith", action: "Check-out", time: "10:15 AM", type: "Visitante" },
-                                { name: "Bob Johnson", action: "Check-in", time: "10:30 AM", type: "Paciente" },
-                                { name: "Alice Brown", action: "Check-in", time: "11:00 AM", type: "Paciente" }
-                            ].map((entry, index) => (
+                            {logbookAPI.getAll.map((entry, index) => (
                                 <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                                     <div className="flex items-center gap-4">
                                         <div className={`w-3 h-3 rounded-full ${entry.action === "Check-in" ? "bg-success" : "bg-muted"

@@ -23,8 +23,13 @@ export class StaffController {
     }
   }
 
-  static async list() {
-    return StaffRepository.findAll()
+  static async list(req: Request, res: Response) {
+        try {
+      const data = await StaffService.list();
+      res.json({ data });
+    } catch (err: any) {
+      res.status(401).json({ error: err.message });
+    }
   }
 
 }
