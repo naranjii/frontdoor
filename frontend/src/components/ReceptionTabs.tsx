@@ -16,7 +16,7 @@ export function ReceptionTabs() {
     ]
 
     const mockQueue = [
-        { id: 1, name: "John Doe", type: "Paciente", time: "10:30 AM", status: "waiting", therapist: "Dr. Sarah Johnson", purpose: "Joining to chega junto" },
+        { id: 1, name: "John Doe", type: "Paciente", time: "10:30 AM", status: "waiting", therapist: "Dr. Sarah Johnson", purpose: "Joining to chega junto", action: "drivelink"},
     ]
 
     const mockExpectedArrivals = [
@@ -84,7 +84,7 @@ export function ReceptionTabs() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {logbookAPI.getAll.map((entry, index) => (
+                            {mockQueue.map((entry, index) => (
                                 <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                                     <div className="flex items-center gap-4">
                                         <div className={`w-3 h-3 rounded-full ${entry.action === "Check-in" ? "bg-success" : "bg-muted"

@@ -34,16 +34,9 @@ export default function Login() {
 
         try {
             const { data } = await staffAPI.login({ username: username, password })
-
-            // Try common token shapes: { token }, { accessToken }, or raw string
             const tokenFromResponse =
               data?.token ?? data?.accessToken ?? (typeof data === "string" ? data : undefined)
-
-            if (!tokenFromResponse || typeof tokenFromResponse !== "string") {
-                toast.error("Resposta inválida do servidor ao efetuar login. Contate o Administrador.")
-                return
-            }
-
+            
             login(tokenFromResponse)
             toast.success("Login bem-sucedido!")
             navigate("/dashboard")
