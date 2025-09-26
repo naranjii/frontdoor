@@ -29,10 +29,10 @@ export function ReceptionTabs() {
 
     return (
         <Tabs defaultValue="queue" className="space-y-6 ">
-            <TabsList className="grid w-full grid-cols-3 rounded-xl shadow-lg text-center font-medium ">
-                <TabsTrigger value="logbook" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  p-1 py-3 rounded-t-xl rounded-l-xl text-white/95" >Registro de Acessos</TabsTrigger>
-                <TabsTrigger value="expected" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  rounded-t-xl text-white/95 ">Check In Agendado</TabsTrigger>
-                <TabsTrigger value="patients" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  rounded-t-xl rounded-r-xl text-white/95 ">Buscar Cadastro</TabsTrigger>
+            <TabsList className="tracking-widest grid w-full grid-cols-3 shadow-lg shadow-cyan-600/40 rounded-xl text-center font-medium  ">
+                <TabsTrigger value="logbook" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  p-1 py-3 rounded-t-xl rounded-l-xl text-white/95  transition duration-400 hover:bg-cyan-500" >Registro de Acessos</TabsTrigger>
+                <TabsTrigger value="expected" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  rounded-t-xl text-white/95  transition duration-400 hover:bg-cyan-500 ">Check In Agendado</TabsTrigger>
+                <TabsTrigger value="patients" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  rounded-t-xl rounded-r-xl text-white/95  transition duration-400 hover:bg-cyan-500 ">Buscar Cadastro</TabsTrigger>
             </TabsList>
 
             {/* Logbook */}
