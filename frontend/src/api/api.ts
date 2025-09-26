@@ -1,18 +1,14 @@
-// /frontend/src/api/api.ts
 import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-// Helper to get JWT from localStorage
 const getToken = () => localStorage.getItem('token');
 
-// Create an axios instance
 const api = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach JWT to every request if available
 api.interceptors.request.use(config => {
   const token = getToken();
   if (token) {
@@ -20,6 +16,7 @@ api.interceptors.request.use(config => {
   }
   return config;
 });
+
 
 // ================= Staff API =================
 export const staffAPI = {

@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dev:b": "cd backend && pnpm dev",
+    "dev:f": "cd frontend && pnpm dev",
+    "dev": "pnpm -r --parallel dev"
+  }
+}
