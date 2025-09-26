@@ -28,11 +28,50 @@ export function ReceptionTabs() {
     )
 
     return (
-        <Tabs defaultValue="queue" className="space-y-6 ">
-            <TabsList className="tracking-widest grid w-full grid-cols-3 shadow-lg shadow-cyan-600/40 rounded-xl text-center font-medium  ">
-                <TabsTrigger value="logbook" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  p-1 py-3 rounded-t-xl rounded-l-xl text-white/95  transition duration-400 hover:bg-cyan-500" >Registro de Acessos</TabsTrigger>
-                <TabsTrigger value="expected" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  rounded-t-xl text-white/95  transition duration-400 hover:bg-cyan-500 ">Check In Agendado</TabsTrigger>
-                <TabsTrigger value="patients" className="bg-gradient-to-r from-cyan-500/80 via-cyan-500/50 to-cyan-300/50  rounded-t-xl rounded-r-xl text-white/95  transition duration-400 hover:bg-cyan-500 ">Buscar Cadastro</TabsTrigger>
+        <Tabs defaultValue="logbook" className="space-y-6">
+            <TabsList className="tracking-wider grid w-full grid-cols-3 shadow-md shadow-cyan-700/30 text-center font-medium">
+
+                <TabsTrigger
+                    value="logbook"
+                    className="
+        p-1 py-3 rounded-t-lg text-slate-500
+        border-x border-t border-gray-400
+        data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
+        hover:bg-gradient-to-r hover:from-cyan-600 hover:to-cyan-500 hover:text-cyan-200/90
+        bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
+        transition-discrete duration-500      
+        data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
+                >
+                    Registro de Acessos
+                </TabsTrigger>
+
+                <TabsTrigger
+                    value="expected"
+                    className="
+        p-1 py-3 rounded-t-lg text-slate-500
+        border-x border-t border-gray-400
+        data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
+        hover:bg-gradient-to-r hover:from-cyan-600 hover:to-cyan-500 hover:text-cyan-200/90
+        bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
+        transition-discrete duration-900     
+        data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
+                >
+                    Check In Agendado
+                </TabsTrigger>
+
+                <TabsTrigger
+                    value="patients"
+                    className="
+        p-1 py-3 rounded-t-lg text-slate-500
+        border-x border-t border-gray-400
+        data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
+        hover:bg-gradient-to-r hover:from-cyan-600 hover:to-cyan-500 hover:text-cyan-200/90
+        bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
+        transition-discrete duration-500      
+        data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
+                >
+                    Buscar Cadastro
+                </TabsTrigger>
             </TabsList>
 
             {/* Logbook */}
