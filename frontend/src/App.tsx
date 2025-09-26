@@ -7,7 +7,6 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import ReceptionistDashboard from "./pages/ReceptionistDashboard";
-import { Dashboard } from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthProvider";
 import PrivateRoute from "./routes/PrivateRoute";
 
