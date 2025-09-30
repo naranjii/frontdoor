@@ -4,9 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { getStatusColor } from "./helper";
 import { Input } from "./ui/input";
-import { logbookAPI } from "@/api/api";
 
 export function ReceptionTabs() {
     const [isCheckInOpen, setIsCheckInOpen] = useState(false);
@@ -35,7 +33,7 @@ export function ReceptionTabs() {
                 <TabsTrigger
                     value="logbook"
                     className="
-        py-1 rounded-t-lg text-slate-800
+        py-1 rounded-t-lg text-slate-600 tracking-widest 
         border-x border-t border-gray-400
         data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
         bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
@@ -43,13 +41,13 @@ export function ReceptionTabs() {
         transition-discrete duration-500      
         data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
                 >
-                    Livro de Entradas e Saídas
+                    Histórico
                 </TabsTrigger>
 
                 <TabsTrigger
                     value="expected"
                     className="
-        py-1 rounded-t-lg text-slate-800
+        py-1 rounded-t-lg text-slate-600 tracking-widest
         border-x border-t border-gray-400
         data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
         bg-gradient-to-r from-cyan-00/80 to-cyan-700/50
@@ -57,13 +55,13 @@ export function ReceptionTabs() {
         transition-discrete duration-900     
         data-[state=active]:font-bold data-[state=active]:shadow-inner data-[state=active]:text-gray-200"
                 >
-                    Agendamentos
+                    Agenda
                 </TabsTrigger>
 
                 <TabsTrigger
                     value="patients"
                     className="
-        py-1 rounded-t-lg text-slate-800
+        py-1 rounded-t-lg text-slate-600 tracking-widest
         border-x border-t border-gray-400
         data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500
         bg-gradient-to-r from-cyan-00/80 to-cyan-700/50

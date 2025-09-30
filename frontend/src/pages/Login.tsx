@@ -16,10 +16,12 @@ export default function Login() {
     const [password, setPassword] = useState("")
     const auth = useContext(AuthContext)
 
+    if (!auth) {
+      throw new Error("useAuth must be used within an AuthProvider")
+    }
     const { login, logout } = auth
 
     useEffect(() => {
-        // ensure any previous session is cleared when arriving at login
         logout()
     }, [logout]);
 
@@ -33,13 +35,14 @@ export default function Login() {
         }
 
         try {
-            const { data } = await staffAPI.login({ username: username, password })
-            const tokenFromResponse =
-              data?.token ?? data?.accessToken ?? (typeof data === "string" ? data : undefined)
-            
-            login(tokenFromResponse)
-            toast.success("Login bem-sucedido!")
-            navigate("/dashboard")
+            const { data } = await staffAPI.login({ username: username, password : password })
+            if (data && data.token) {
+                login(data.token)
+                toast.success("Login bem-sucedido! Navegando até seu painel...")
+                navigate("/dashboard")
+            } else {
+                toast.error("Resposta de login inválida do servidor.")
+            }
         } catch (error) {
             if (error instanceof AxiosError) {
                 toast.error(error.response?.data?.message || "Credenciais inválidas")

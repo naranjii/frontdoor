@@ -20,7 +20,8 @@ export const DashboardHeader = ({ onCheckIn }: DashboardHeaderProps) => {
             </div>
             <div>
               <h1 className="text-xl font-semibold text-foreground">Painel da Recepção</h1>
-              <p className="text-sm text-muted-foreground">Controle de check-in e cadastros</p>
+              <p className="text-sm text-muted-foreground">Controle de acesso à instituição</p>
+              <p className="text-sm text-muted-foreground">Agenda e Cadastros</p>
             </div>
           </div>
         </div>
@@ -28,7 +29,7 @@ export const DashboardHeader = ({ onCheckIn }: DashboardHeaderProps) => {
         <div className="flex items-center gap-3">
           <Button
             onClick={onCheckIn}
-            className="bg-gradient-primary text-primary-foreground hover:shadow-glow transition-all duration-300 font-medium px-6"
+            className="h-14 w-36 tracking-widest font-bold bg-gradient-primary text-primary-foreground hover:shadow-glow transition-all duration-300 text-md px-6"
           >
             <UserPlus className="mr-2 h-4 w-4" />
             Check In
