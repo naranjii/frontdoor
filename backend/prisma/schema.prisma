@@ -8,8 +8,19 @@ datasource db {
   url      = env("DB_URL")
 }
 
+model Institution {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  staffs    Staff[]
+}
+
 model Staff {
-  id        Int       @id @default(autoincrement())
+  id            String       @id @default(uuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id], map: "Staff_organization_fkey")
+
   username  String    @unique
   name      String
   password  String
@@ -28,8 +39,8 @@ model Guest {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  createdById Int
-  createdBy   Staff @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
+  createdById String
+  createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
 
   history Logbook[]
 }
@@ -45,8 +56,8 @@ model Patient {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  createdById Int
-  createdBy   Staff @relation(fields: [createdById], references: [id], map: "Patient_createdBy_fkey")
+  createdById String
+  createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Patient_createdBy_fkey")
 
   history Logbook[]
 }
@@ -58,8 +69,8 @@ model Logbook {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  createdById Int
-  createdBy   Staff @relation(fields: [createdById], references: [id], map: "Logbook_createdBy_fkey")
+  createdById String
+  createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Logbook_createdBy_fkey")
 
   guestId String?
   guest   Guest?  @relation(fields: [guestId], references: [id], map: "Logbook_guest_fkey")
