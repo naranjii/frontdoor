@@ -27,7 +27,7 @@ export async function login(username: string, password: string) {
 	const valid = await bcrypt.compare(password, staff.password);
 	if (!valid) throw error("Nome de usuário ou senha inválido");
 	return jwt.sign(
-		{ id: staff.id, role: staff.role },
+		{ id: staff.id, name: staff.name, institution: staff.institutionName, role: staff.role },
 		process.env.JWT_SECRET || "secret",
 		{
 			expiresIn: "1h",
