@@ -4,10 +4,14 @@ import patientRoutes from "./routes/patientRoutes";
 import logbookRoutes from "./routes/logbookRoutes";
 import staffRoutes from "./routes/staffRoutes";
 import cors from "cors";
+import institutionRoutes from "./routes/institutionRoutes";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Institution auth
+app.use("/institution", institutionRoutes);
 
 // Staff auth
 app.use("/staff", staffRoutes);
