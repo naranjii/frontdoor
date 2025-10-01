@@ -48,11 +48,12 @@ model Guest {
 model Patient {
   id           String   @id @default(uuid())
   name         String
-  healthcare   String
+  healthcare   String?
   patientCode  Int
   supportLevel Int
   checked      Boolean  @default(false)
   driveLink    String?
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

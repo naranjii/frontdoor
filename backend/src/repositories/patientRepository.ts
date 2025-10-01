@@ -1,10 +1,12 @@
 import { prisma } from "../config/db";
 
 interface CreatePatientDTO {
+  name: string
   patientCode: number;
   supportLevel: number;
   driveLink?: string;
-  createdById: number;
+  healthcare?: string;
+  createdById: string;
 }
 
 interface UpdatePatientDTO {
