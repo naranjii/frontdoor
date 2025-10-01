@@ -2,6 +2,7 @@ import { prisma } from "../config/db";
 import { Staff, StaffRole } from "../generated/prisma";
 
 interface CreateStaffDTO {
+  institution: string
   username: string;
   name: string;
   hashedPassword: string;
@@ -9,9 +10,9 @@ interface CreateStaffDTO {
 }
 
 export const StaffRepository = {
-  async create({ username, name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
+  async create({ institution, username, name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
     const staff = await prisma.staff.create({
-      data: { username, name, password: hashedPassword, role },
+      data: { institution, username, name, password: hashedPassword, role },
     });
     const { password, ...result } = staff;
     return result;
