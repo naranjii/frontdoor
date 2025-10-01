@@ -19,7 +19,7 @@ services:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_USER: otware
       MYSQL_PASSWORD: mysql
-      MYSQL_DATABASE: mysql_frontdoor
+      MYSQL_DATABASE: mysql_teraplus
 
     volumes:
       - my-mysql-data:/var/lib/mysql
