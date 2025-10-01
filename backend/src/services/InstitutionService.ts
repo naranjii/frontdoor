@@ -1,7 +1,7 @@
 import { InstitutionRepository } from "../repositories/institutionRepository";
 
 export const InstitutionService = {
-    async register(data: { name: string }) {
-        return InstitutionRepository.create({ name: data.name });
+    async register(data: { institutionName: string }) {
+        return InstitutionRepository.create({ institutionName: data.institutionName });
     }
 }

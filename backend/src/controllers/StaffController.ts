@@ -4,6 +4,9 @@ import * as StaffService from "../services/StaffService";
 export class StaffController {
   static async registerStaff(req: Request, res: Response) {
     const { institutionName, username, name, password, role } = req.body;
+    if (!institutionName || !username || !name || !password || !role) {
+      return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+    }
     try {
       const staff = await StaffService.register({ institutionName, username, name, password, role});
       res.status(201).json(staff);
@@ -13,6 +16,9 @@ export class StaffController {
   }
 
   static async login(req: Request, res: Response) {
+    if (!req.body.username || !req.body.password) {
+      return res.status(400).json({ error: "Nome de usuário e senha são obrigatórios" });
+    }
     const { username, password } = req.body;
     try {
       const token = await StaffService.login(username, password);
