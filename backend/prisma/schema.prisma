@@ -9,19 +9,20 @@ datasource db {
 }
 
 model Institution {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  staffs    Staff[]
-  @@unique([id, name])
+  id              String   @id @default(uuid())
+  institutionName String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  staffs          Staff[]
+
+  @@unique([id, institutionName])
 }
 
 model Staff {
-  id            String       @id @default(uuid())
+  id              String      @id @default(uuid())
   institutionName String
-  institutionId String
-  institution   Institution @relation(fields: [institutionId, institutionName], references: [id, name], map: "Staff_institution_fkey")
+  institutionId   String
+  institution     Institution @relation(fields: [institutionId, institutionName], references: [id, institutionName], map: "Staff_institution_fkey")
 
   username  String    @unique
   name      String
@@ -48,16 +49,16 @@ model Guest {
 }
 
 model Patient {
-  id           String   @id @default(uuid())
+  id           String  @id @default(uuid())
   name         String
   healthcare   String?
   patientCode  Int
   supportLevel Int
-  checked      Boolean  @default(false)
+  checked      Boolean @default(false)
   driveLink    String?
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   createdById String
   createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Patient_createdBy_fkey")

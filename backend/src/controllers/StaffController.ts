@@ -3,9 +3,9 @@ import * as StaffService from "../services/StaffService";
 
 export class StaffController {
   static async registerStaff(req: Request, res: Response) {
-    const { institution,username, name, password, role } = req.body;
+    const { institutionName, username, name, password, role } = req.body;
     try {
-      const staff = await StaffService.register({ institution, username, name, password, role});
+      const staff = await StaffService.register({ institutionName, username, name, password, role});
       res.status(201).json(staff);
     } catch (err: any) {
       res.status(400).json({ error: err.message });

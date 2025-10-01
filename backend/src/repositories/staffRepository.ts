@@ -2,7 +2,7 @@ import { prisma } from "../config/db";
 import { Staff, StaffRole } from "../generated/prisma";
 
 interface CreateStaffDTO {
-  institution: string
+  institutionName: string;
   username: string;
   name: string;
   hashedPassword: string;
@@ -10,9 +10,26 @@ interface CreateStaffDTO {
 }
 
 export const StaffRepository = {
-  async create({ institution, username, name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
+
+  async create({ institutionName, username, name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
+    const institution = await prisma.institution.findFirst({ where: { institutionName } });
+    if (!institution) {
+      throw new Error("Institution not found");
+    }
+
     const staff = await prisma.staff.create({
-      data: { institution, username, name, password: hashedPassword, role },
+      data: {
+        institution: {
+          connect: {
+            id: institution.id,
+            institutionName: institution.institutionName,
+          },
+        },
+        username,
+        name,
+        password: hashedPassword,
+        role,
+      },
     });
     const { password, ...result } = staff;
     return result;
@@ -27,11 +44,11 @@ export const StaffRepository = {
     return prisma.staff.findUnique({ where: { username } });
   },
 
-  async findById(id: number) {
+  async findById(id: string) {
     return prisma.staff.findUnique({ where: { id } });
   },
 
-  async delete(id: number) {
+  async delete(id: string) {
     return prisma.staff.delete({ where: { id } });
   },
 };
