@@ -19,7 +19,7 @@ model Institution {
 model Staff {
   id            String       @id @default(uuid())
   institutionId String
-  institution   Institution @relation(fields: [institutionId], references: [id], map: "Staff_organization_fkey")
+  institution   Institution @relation(fields: [institutionId], references: [id], map: "Staff_institution_fkey")
 
   username  String    @unique
   name      String
