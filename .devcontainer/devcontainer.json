@@ -4,6 +4,7 @@
     "service": "app",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "initializeCommand": "ls",
+    "forwardPorts": [3306, 3000, 8000],
     "mounts": [
         "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
     ],
