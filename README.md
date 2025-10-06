@@ -1,98 +1,108 @@
-# Frontdoor – Front Desk Dashboard
+# Teraplus – Painel de Recepção
 
-This repository delivers the **Front Desk Dashboard**, currently implemented as a reception and patient check-in system. It is part of a broader vision: eventually becoming a dashboard module within a full-scale ERP platform for clinic operations.
-
----
-
-## Purpose
-
-- Provides reception staff with tools for **check-in**, appointment workflows, and daily agenda management.
-- Operates independently in this repository.
-- Over time, will be refactored as a module in a comprehensive ERP with multiple dashboards.
+Este repositório entrega o **Painel de Recepção**, atualmente implementado como um sistema de recepção e check-in de pacientes. Ele faz parte de uma visão mais ampla: tornar-se, futuramente, um módulo de dashboard dentro de uma plataforma ERP completa voltada à operação de clínicas.
 
 ---
 
-## Roadmap for `frontdoor`
-
-### Phase 1 – Core Reception Workflow (current)
-- Patient check-in UI and backend CRUD operations.
-- Daily schedule dashboard: show appointments, statuses, queue order.
-- Integration hooks for external booking systems.
-- Authentication and roles for reception users.
-
-### Phase 2 – Enhanced Reception Features
-- Live queue/status management.
-- Patient notifications (SMS, email, messaging).
-- Insurance/ID verification workflow.
-- Multilingual support.
-
-### Phase 3 – Modular Transformation
-- API spec version for ERP-module interface.
-- SSO integration for unified login.
-- Clean frontend embedding in host ERP dashboard shell.
-- Shared component design (UI, widgets, services).
-
-### Phase 4 – ERP Ecosystem (in separate repositories)
-*(Not in `frontdoor` repo)*  
-- Finance dashboard (billing, payments, claims).
-- Clinical dashboard (EMR, providers, patient charts).
-- HR/staff scheduling, payroll module.
-- Analytics & reporting dashboard aggregating all modules.
+## Dev
+> Monte o container e no terminal digite:
+```bash
+cd backend | pnpm i & cd ../frontend | pnpm i | cd .. | pnpm dev
+```
 
 ---
 
-## 📦 Scope of This Repository
+## Propósito
 
-- This codebase implements only the **Front Desk Dashboard**.
-- It will **not** include features belonging to finance, HR, or clinical modules.
-- ERP-wide integration, orchestration, or cross-module behavior is out of scope here.
-
----
-
-## 🛠 Tech Stack (current / planned)
-
-*(Feel free to customize this with actual frameworks and tools.)*
-
-- Frontend: React or Vue, Redux / Vuex, Tailwind or Material UI  
-- Backend: Node.js + Express or Python Flask  
-- Database: PostgreSQL or MongoDB  
-- Authentication: JWT or OAuth2  
-- Notifications: Twilio / SendGrid / WhatsApp API  
-- API: REST or GraphQL  
-- Containerization: Docker  
+* Fornece à equipe de recepção ferramentas para **check-in**, controle de agendamentos e gestão da agenda diária.
+* Funciona de forma independente neste repositório.
+* Com o tempo, será refatorado como um módulo integrado a um ERP abrangente com múltiplos dashboards.
 
 ---
 
-## 📋 Contribution Guidelines
+## Roteiro do `teraplus`
 
-- Contributions specific to **Front Desk Dashboard** are welcome via pull requests.
-- Features spanning multiple ERP modules should be proposed in the wider ERP repositories (not in this one).
-- Keep changes focused and modular to simplify future integration.
+### Fase 1 – Fluxo Central de Recepção (atual)
+
+* Interface e operações CRUD de check-in de pacientes.
+* Dashboard de agenda diária: exibe consultas, status e ordem na fila.
+* Pontos de integração com sistemas externos de agendamento.
+* Autenticação e papéis de usuário para recepcionistas.
+
+### Fase 2 – Funcionalidades Avançadas de Recepção
+
+* Gerenciamento em tempo real de fila e status.
+* Notificações aos pacientes (SMS, e-mail, mensageria).
+* Fluxo de verificação de convênios e documentos.
+* Suporte multilíngue.
+
+### Fase 3 – Transformação Modular
+
+* Versão da API compatível com interface de módulos ERP.
+* Integração SSO para login unificado.
+* Frontend preparado para incorporação ao painel principal do ERP.
+* Design compartilhado de componentes (UI, widgets, serviços).
+
+### Fase 4 – Ecossistema ERP (em repositórios separados)
+
+*(Não incluso neste repositório `teraplus`)*
+
+* Dashboard financeiro (faturamento, pagamentos, convênios).
+* Dashboard clínico (prontuários, profissionais, histórico do paciente).
+* Módulo de RH e escalas de funcionários.
+* Dashboard de analytics e relatórios integrando todos os módulos.
 
 ---
 
-## 🧭 Module Vision
+## 📦 Escopo Deste Repositório
 
-- `frontdoor` is the foundation and proof-of-concept for a clinic's digital front door.
-- It will evolve into a clean, embeddable module inside a full clinic ERP.
-- Its responsibilities: reception workflows, patient arrival, queue management, receptionist controls.
-
----
-
-## 📅 Timeline Example
-
-| Phase  | Milestones (approximate)                                     |
-|--------|--------------------------------------------------------------|
-| 1      | MVP check-in + schedule UI (0–3 months)                      |
-| 2      | Notifications, queue status, multilingual (3–6 months)       |
-| 3      | API-ready module, SSO, embed support (6–9 months)            |
-| 4      | ERP dashboard ecosystem in separate repos (9–12+ months)     |
+* Este código implementa apenas o **Painel de Recepção**.
+* **Não** inclui funcionalidades de finanças, RH ou módulos clínicos.
+* Integração ampla do ERP, orquestração ou comportamento entre módulos estão fora do escopo.
 
 ---
 
-## ✅ Summary
+## 🛠 Stack Tecnológica (atual / planejada)
 
-This repository implements the **Front Desk Dashboard**. It serves as the **reception entry point** within a larger planned ERP. Future evolution will modularize it for embedding into a unified ERP platform that handles clinical, administrative, financial, and HR workflows.
+*(Personalize conforme os frameworks e ferramentas efetivamente usados.)*
+
+* Frontend: React ou Vue, Redux / Vuex, Tailwind ou Material UI
+* Backend: Node.js + Express ou Python Flask
+* Banco de dados: PostgreSQL ou MongoDB
+* Autenticação: JWT ou OAuth2
+* Notificações: Twilio / SendGrid / API do WhatsApp
+* API: REST ou GraphQL
+* Containerização: Docker
 
 ---
 
+## 📋 Diretrizes de Contribuição
+
+* Contribuições específicas para o **Painel de Recepção** são bem-vindas via pull requests.
+* Funcionalidades que envolvam múltiplos módulos do ERP devem ser propostas nos repositórios correspondentes.
+* Mantenha as alterações focadas e modulares para facilitar futuras integrações.
+
+---
+
+## 🧭 Visão do Módulo
+
+* `teraplus` é a base e o protótipo da “porta de entrada digital” de uma clínica.
+* Evoluirá para um módulo limpo e incorporável dentro de um ERP clínico completo.
+* Suas responsabilidades: fluxo de recepção, chegada de pacientes, gestão de filas e controles da recepção.
+
+---
+
+## 📅 Exemplo de Cronograma
+
+| Fase | Marcos (aproximados)                                             |
+| ---- | ---------------------------------------------------------------- |
+| 1    | MVP de check-in + interface de agenda (0–3 meses)                |
+| 2    | Notificações, status em tempo real, multilíngue (3–6 meses)      |
+| 3    | Módulo com API e SSO prontos, suporte a incorporação (6–9 meses) |
+| 4    | Ecossistema ERP em repositórios separados (9–12+ meses)          |
+
+---
+
+## ✅ Resumo
+
+Este repositório implementa o **Painel de Recepção Teraplus**. Ele serve como **ponto de entrada da recepção** dentro de um ERP em planejamento. A evolução futura modularizará este sistema para integração em uma plataforma unificada, cobrindo fluxos clínicos, administrativos, financeiros e de RH.
