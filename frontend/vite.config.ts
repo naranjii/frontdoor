@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   server: {
+    allowedHosts: ["extramural-holoblastic-nora.ngrok-free.dev", "localhost"],
     host: "::",
     port: 8000,
   },
