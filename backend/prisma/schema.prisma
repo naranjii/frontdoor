@@ -31,9 +31,10 @@ model Staff {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  guests   Guest[]
-  patients Patient[]
-  logbooks Logbook[]
+  guests      Guest[]
+  patients    Patient[]
+  logbooks    Logbook[]
+  Appointment Appointment[]
 }
 
 model Guest {
@@ -63,7 +64,21 @@ model Patient {
   createdById String
   createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Patient_createdBy_fkey")
 
-  history Logbook[]
+  history     Logbook[]
+  Appointment Appointment[]
+}
+
+model Appointment {
+  id            String   @id @default(uuid())
+  appointmentAt DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id], map: "Appointment_patient_fkey")
+
+  createdById String
+  createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Appointment_createdBy_fkey")
 }
 
 model Logbook {
