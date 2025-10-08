@@ -3,12 +3,24 @@ import * as StaffService from "../services/StaffService";
 
 export class StaffController {
   static async registerStaff(req: Request, res: Response) {
-    const { institutionName, username, name, password, role } = req.body;
-    if (!institutionName || !username || !name || !password || !role) {
-      return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+    if (!req.body || typeof req.body !== 'object') {
+      return res.status(400).json({ error: 'Request body is required' });
     }
+
+    const { institution, username, name, password, role } = req.body as {
+      institution?: string;
+      username?: string;
+      name?: string;
+      password?: string;
+      role?: string;
+    };
+
+    if (!institution || !username || !name || !password || !role) {
+      return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
+    }
+
     try {
-      const staff = await StaffService.register({ institutionName, username, name, password, role});
+      const staff = await StaffService.register({ institution, username, name, password, role: role as any });
       res.status(201).json(staff);
     } catch (err: any) {
       res.status(400).json({ error: err.message });

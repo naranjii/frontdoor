@@ -5,20 +5,20 @@ import { error } from "console";
 import { StaffRole } from '../generated/prisma';
 
 export async function register({
-	institutionName,
+	institution,
 	username,
 	name,
 	password,
 	role
 }: {
-	institutionName: string;
+	institution: string;
 	username: string;
 	name: string;
 	password: string;
 	role: StaffRole
 }) {
 	const hashedPassword = await bcrypt.hash(password, 10);
-	return StaffRepository.create({ institutionName, username, name, hashedPassword, role });
+	return StaffRepository.create({ institution, username, name, hashedPassword, role });
 }
 
 export async function login(username: string, password: string) {
