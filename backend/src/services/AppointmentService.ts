@@ -1,35 +1,35 @@
-// src/services/LogbookService.ts
 import { z } from "zod";
-import * as logbookRepository from "../repositories/logbookRepository";
+import * as appointmentRepository from "../repositories/appointmentRepository";
 
-const LogbookSchema = z.object({
+const AppointmentSchema = z.object({
   createdById: z.number(),
-  guestId: z.string().uuid().optional(),
   patientId: z.string().uuid().optional(),
-  checkOut: z.date().optional(),
+  guestId: z.string().uuid().optional(),
+  scheduledAt: z.date().optional(),
 });
 
-export type LogbookInput = z.infer<typeof LogbookSchema>;
+export type AppointmentInput = z.infer<typeof AppointmentSchema>;
 
-export class LogbookService {
-  static async create(data: LogbookInput) {
-    const parsed = LogbookSchema.parse(data);
-    return logbookRepository.create(parsed);
+export class AppointmentService {
+  static async create(data: AppointmentInput) {
+    const parsed = AppointmentSchema.parse(data);
+    return appointmentRepository.create(parsed as any);
   }
 
   static async getAll() {
-    return logbookRepository.findAll();
+    return appointmentRepository.findAll();
   }
 
   static async getById(id: string) {
-    return logbookRepository.findById(id);
+    return appointmentRepository.findById(id);
   }
 
-  static async update(id: string, data: Partial<LogbookInput>) {
-    return logbookRepository.update(id, data);
+  static async update(id: string, data: Partial<AppointmentInput>) {
+    return appointmentRepository.update(id, data as any);
   }
 
   static async remove(id: string) {
-    return logbookRepository.remove(id);
+    return appointmentRepository.remove(id);
   }
 }
+

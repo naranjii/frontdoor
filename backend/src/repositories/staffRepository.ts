@@ -9,46 +9,42 @@ interface CreateStaffDTO {
   role: StaffRole;
 }
 
-export const StaffRepository = {
+export async function create({ institutionName, username, name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
+  const institution = await prisma.institution.findFirst({ where: { institutionName } });
+  if (!institution) {
+    throw new Error("Institution not found");
+  }
 
-  async create({ institutionName, username, name, hashedPassword, role }: CreateStaffDTO): Promise<Omit<Staff, "password">> {
-    const institution = await prisma.institution.findFirst({ where: { institutionName } });
-    if (!institution) {
-      throw new Error("Institution not found");
-    }
-
-    const staff = await prisma.staff.create({
-      data: {
-        institution: {
-          connect: {
-            id: institution.id,
-            institutionName: institution.institutionName,
-          },
+  const staff = await prisma.staff.create({
+    data: {
+      institution: {
+        connect: {
+          id: institution.id,
+          institutionName: institution.institutionName,
         },
-        username,
-        name,
-        password: hashedPassword,
-        role,
       },
-    });
-    const { password, ...result } = staff;
-    return result;
-  },
+      username,
+      name,
+      password: hashedPassword,
+      role,
+    },
+  });
+  const { password, ...result } = staff;
+  return result;
+}
 
-  async findAll(){
-    return prisma.staff.findMany();
-  },
+export async function findAll(){
+  return prisma.staff.findMany();
+}
 
+export async function findByUsername(username: string) {
+  return prisma.staff.findUnique({ where: { username } });
+}
 
-  async findByUsername(username: string) {
-    return prisma.staff.findUnique({ where: { username } });
-  },
+export async function findById(id: string) {
+  return prisma.staff.findUnique({ where: { id } });
+}
 
-  async findById(id: string) {
-    return prisma.staff.findUnique({ where: { id } });
-  },
-
-  async delete(id: string) {
-    return prisma.staff.delete({ where: { id } });
-  },
-};
+export async function remove(id: string) {
+  return prisma.staff.delete({ where: { id } });
+}

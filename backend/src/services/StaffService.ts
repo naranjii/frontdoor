@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
-import { StaffRepository } from "../repositories/staffRepository";
+import * as StaffRepository from "../repositories/staffRepository";
 import { error } from "console";
 import { StaffRole } from '../generated/prisma';
 
@@ -22,11 +22,11 @@ export async function register({
 }
 
 export async function login(username: string, password: string) {
-	const staff = await StaffRepository.findByUsername(username);
-	if (!staff) throw error("Nome de usuário ou senha inválido");
-	const valid = await bcrypt.compare(password, staff.password);
-	if (!valid) throw error("Nome de usuário ou senha inválido");
-	return jwt.sign(
+		const staff = await StaffRepository.findByUsername(username);
+		if (!staff) throw new Error("Nome de usuário ou senha inválido");
+		const valid = await bcrypt.compare(password, staff.password);
+		if (!valid) throw new Error("Nome de usuário ou senha inválido");
+		return jwt.sign(
 		{ id: staff.id, name: staff.name, institution: staff.institutionName, role: staff.role },
 		process.env.JWT_SECRET || "secret",
 		{

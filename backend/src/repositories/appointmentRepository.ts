@@ -1,37 +1,29 @@
 import { prisma } from "../config/db";
+import type { Prisma } from '../generated/prisma';
 
-interface CreateLogDTO {
-  createdById: number;
-  guestId?: string;
-  patientId?: string;
-  checkOut: Date;
+type CreateAppointmentDTO = Prisma.AppointmentCreateInput;
+type UpdateAppointmentDTO = Prisma.AppointmentUpdateInput;
+
+export async function create(data: CreateAppointmentDTO) {
+  return prisma.appointment.create({ data });
 }
 
-interface UpdateLogDTO {
-  checkOut?: Date;
+export async function findAll(filters?: { patientId?: string; guestId?: string }) {
+  const where: any = {};
+  if (filters?.patientId) where.patientId = filters.patientId;
+  if (filters?.guestId) where.guestId = filters.guestId;
+  return prisma.appointment.findMany({ where });
 }
 
-export const LogbookRepository = {
-  async create(data: CreateLogDTO) {
-    return prisma.logbook.create({ data });
-  },
+export async function findById(id: string) {
+  return prisma.appointment.findUnique({ where: { id } });
+}
 
-  async findAll(filters?: { patientId?: string; guestId?: string }) {
-    const where: any = {};
-    if (filters?.patientId) where.patientId = filters.patientId;
-    if (filters?.guestId) where.guestId = filters.guestId;
-    return prisma.logbook.findMany({ where });
-  },
+export async function update(id: string, data: UpdateAppointmentDTO) {
+  return prisma.appointment.update({ where: { id }, data });
+}
 
-  async findById(id: string) {
-    return prisma.logbook.findUnique({ where: { id } });
-  },
+export async function remove(id: string) {
+  return prisma.appointment.delete({ where: { id } });
+}
 
-  async update(id: string, data: UpdateLogDTO) {
-    return prisma.logbook.update({ where: { id }, data });
-  },
-
-  async delete(id: string) {
-    return prisma.logbook.delete({ where: { id } });
-  },
-};

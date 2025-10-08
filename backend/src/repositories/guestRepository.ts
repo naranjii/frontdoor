@@ -1,14 +1,8 @@
 import { prisma } from "../config/db";
-import { Guest } from "../generated/prisma";
+import type { Prisma } from '../generated/prisma';
 
-interface CreateGuestDTO {
-  createdById: number;
-  checked?: boolean;
-}
-
-interface UpdateGuestDTO {
-  checked?: boolean;
-}
+type CreateGuestDTO = Prisma.GuestCreateInput;
+type UpdateGuestDTO = Prisma.GuestUpdateInput;
 
 export async function create(data: CreateGuestDTO) {
   return prisma.guest.create({ data });

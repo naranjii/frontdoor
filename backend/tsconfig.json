@@ -4,9 +4,20 @@
   "module": "CommonJS",
   "esModuleInterop": true,
   "strict": true,
+  "types": ["node", "vitest"],
   "rootDir": ".",
   "outDir": "dist",
   "skipLibCheck": true,
   "forceConsistentCasingInFileNames": true
   }
+  ,
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts",
+    "tests/**/*.d.ts"
+  ]
+  ,
+  "exclude": [
+    "src/controllers/appointmentController.ts"
+  ]
 }

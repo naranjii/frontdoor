@@ -1,4 +1,4 @@
-import { InstitutionRepository } from "../repositories/institutionRepository";
+import * as InstitutionRepository from "../repositories/institutionRepository";
 
 export const InstitutionService = {
     async register(data: { institutionName: string }) {

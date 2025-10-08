@@ -1,22 +1,12 @@
 import { Router } from "express";
-import { LogbookController } from "../controllers/LogbookController";
+import { AppointmentController } from "../controllers/AppointmentController";
 import { staffMiddleware } from "../middlewares/staffMiddleware";
 
 const router = Router();
 
-// Create Logbook entry
-router.post("/", staffMiddleware(), LogbookController.create);
-
-// List all Logbook entries
-router.get("/", staffMiddleware(), LogbookController.getAll);
-
-// Get Logbook entry by ID
-router.get("/:id", staffMiddleware(), LogbookController.getById);
-
-// Update Logbook entry
-router.put("/:id", staffMiddleware(), LogbookController.update);
-
-// Delete Logbook entry
-router.delete("/:id", staffMiddleware(), LogbookController.remove);
-
+router.post("/", staffMiddleware(), AppointmentController.create);
+router.get("/", staffMiddleware(), AppointmentController.getAll);
+router.get("/:id", staffMiddleware(), AppointmentController.getById);
+router.put("/:id", staffMiddleware(), AppointmentController.update);
+router.delete("/:id", staffMiddleware(), AppointmentController.remove);
 export default router;

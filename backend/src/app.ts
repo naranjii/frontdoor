@@ -2,6 +2,7 @@ import express from "express";
 import guestRoutes from "./routes/guestRoutes";
 import patientRoutes from "./routes/patientRoutes";
 import logbookRoutes from "./routes/logbookRoutes";
+import appointmentRoutes from "./routes/appointmentRoutes";
 import staffRoutes from "./routes/staffRoutes";
 import cors from "cors";
 import institutionRoutes from "./routes/institutionRoutes";
@@ -24,6 +25,9 @@ app.use("/patients", patientRoutes);
 
 // Logbook
 app.use("/logbooks", logbookRoutes);
+
+// Appointments
+app.use("/appointments", appointmentRoutes);
 
 // Error handler: ensure JSON responses for uncaught errors
 app.use((err: any, _req: any, res: any, _next: any) => {
