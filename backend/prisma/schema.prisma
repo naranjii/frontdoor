@@ -53,8 +53,9 @@ model Patient {
   id           String  @id @default(uuid())
   name         String
   healthcare   String?
-  patientCode  Int
-  supportLevel Int
+  patientCode  Int?
+  supportLevel Int?
+  notes        String?
   checked      Boolean @default(false)
   driveLink    String?
 
@@ -73,6 +74,9 @@ model Appointment {
   appointmentAt DateTime
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  therapist String?
+  notes     String?
 
   patientId String
   patient   Patient @relation(fields: [patientId], references: [id], map: "Appointment_patient_fkey")
