@@ -4,6 +4,28 @@ const API_BASE = import.meta.env.VITE_API_URL;
 
 const getToken = () => localStorage.getItem('token');
 
+/**
+ * Try to extract institutionName from the JWT token payload, falling back to
+ * localStorage key 'institutionName' when available. Returns undefined when not found.
+ */
+const getInstitutionName = (): string | undefined => {
+  try {
+    const token = getToken();
+    if (token) {
+      const parts = token.split('.');
+      if (parts.length >= 2) {
+        const payload = JSON.parse(atob(parts[1]));
+        if (payload && typeof payload.institution === 'string') return payload.institution;
+      }
+    }
+  } catch (e) {
+    // ignore and fallback to localStorage
+  }
+
+  const stored = localStorage.getItem('institution');
+  return stored ?? undefined;
+};
+
 const api = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
@@ -20,8 +42,12 @@ api.interceptors.request.use(config => {
 
 // ================= Staff API =================
 export const staffAPI = {
-  register: (data: { username: string, name: string; password: string; role: 'ADMIN' | 'STAFF' }) =>
-    api.post('/staff/register', data),
+  // register will automatically attach institutionName when available
+  register: (data: { username: string, name: string; password: string; role: 'ADMIN' | 'RECEPTIONIST' | 'COORDINATOR' }) => {
+    const institution = getInstitutionName();
+    const payload = institution ? { ...data, institution } : data;
+    return api.post('/staff/register', payload);
+  },
   login: (data: { username: string; password: string;  }) => api.post('/staff/login', data),
   getAll: () => api.get('/staff'),
 };
