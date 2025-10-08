@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +19,10 @@ import { useToast } from "@/hooks/use-toast";
 interface CheckInModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Optional: preselect the visitor type when opening (e.g. 'patient' or 'guest') */
+  initialVisitorType?: 'patient' | 'guest';
+  /** Optional: preselect a person's name when opening the modal */
+  initialSelectedPerson?: string;
 }
 
 const mockPatients = [
@@ -31,7 +35,7 @@ const mockGuests = [
   { id: 1, name: "Maria Garcia", phone: "+1 (555) 234-5678" },
 ];
 
-export const CheckInModal = ({ open, onOpenChange }: CheckInModalProps) => {
+export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSelectedPerson }: CheckInModalProps) => {
   const [step, setStep] = useState(1);
   const [visitorType, setVisitorType] = useState("");
   const [isNewRegistration, setIsNewRegistration] = useState(false);
@@ -66,6 +70,19 @@ export const CheckInModal = ({ open, onOpenChange }: CheckInModalProps) => {
     handleReset();
     onOpenChange(false);
   };
+
+  // when modal opens with initial props, apply them
+  useEffect(() => {
+    if (open) {
+      if (initialVisitorType) {
+        setVisitorType(initialVisitorType);
+        setStep(2);
+      }
+      if (initialSelectedPerson) {
+        setSelectedPerson(initialSelectedPerson);
+      }
+    }
+  }, [open, initialVisitorType, initialSelectedPerson]);
 
   const handleNext = () => {
     if (step === 1 && visitorType) {

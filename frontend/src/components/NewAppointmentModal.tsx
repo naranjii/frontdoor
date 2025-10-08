@@ -13,8 +13,9 @@ interface Props {
 
 export const NewAppointmentModal = ({ open, onOpenChange }: Props) => {
   const [patientId, setPatientId] = useState('');
-  const [guestId, setGuestId] = useState('');
-  const [scheduledAt, setScheduledAt] = useState('');
+  const [therapist, setTherapist] = useState('');
+  const [notes, setNotes] = useState('');
+  const [appointmentAt, setAppointmentAt] = useState('');
   const { toast } = useToast();
 
   const handleClose = () => onOpenChange(false);
@@ -22,12 +23,13 @@ export const NewAppointmentModal = ({ open, onOpenChange }: Props) => {
   const handleSubmit = async () => {
     try {
       // TODO: replace createdById with real staff id from auth context or token
-      await appointmentAPI.create({ createdById: 1, patientId: patientId || undefined, guestId: guestId || undefined, scheduledAt: scheduledAt ? new Date(scheduledAt) : undefined });
+      await appointmentAPI.create({ createdById: 1, patientId, appointmentAt: appointmentAt ? new Date(appointmentAt) : new Date(), therapist: therapist || undefined, notes: notes || undefined });
       toast({ title: 'Appointment created', description: `Appointment scheduled` });
       handleClose();
       setPatientId('');
-      setGuestId('');
-      setScheduledAt('');
+      setTherapist('');
+      setNotes('');
+      setAppointmentAt('');
     } catch (err) {
       toast({ title: 'Error', description: 'Failed to create appointment' });
     }
@@ -42,16 +44,20 @@ export const NewAppointmentModal = ({ open, onOpenChange }: Props) => {
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="patientId">Patient ID (optional)</Label>
+            <Label htmlFor="patientId">Patient ID</Label>
             <Input id="patientId" value={patientId} onChange={(e) => setPatientId(e.target.value)} />
           </div>
           <div>
-            <Label htmlFor="guestId">Guest ID (optional)</Label>
-            <Input id="guestId" value={guestId} onChange={(e) => setGuestId(e.target.value)} />
+            <Label htmlFor="therapist">Therapist (optional)</Label>
+            <Input id="therapist" value={therapist} onChange={(e) => setTherapist(e.target.value)} />
           </div>
           <div>
-            <Label htmlFor="scheduledAt">Scheduled At</Label>
-            <Input id="scheduledAt" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} />
+            <Label htmlFor="notes">Notes (optional)</Label>
+            <Input id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="appointmentAt">Appointment At</Label>
+            <Input id="appointmentAt" type="datetime-local" value={appointmentAt} onChange={(e) => setAppointmentAt(e.target.value)} />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
