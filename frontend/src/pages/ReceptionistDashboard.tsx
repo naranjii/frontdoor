@@ -6,7 +6,7 @@ import {
 
 } from "lucide-react"
 import { CheckInModal } from "@/components/CheckInModal"
-import { DashboardHeader } from "@/components/DashboardHeader"
+import { ReceptionistDashboardHeader } from "@/components/ReceptionistDashboardHeader"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import { ReceptionTabs } from "@/components/ReceptionTabs"
@@ -32,7 +32,7 @@ export default function ReceptionistDashboard() {
         <AppSidebar activeView={activeView} setActiveView={setActiveView} />
         {/* Header */}
         <div className="border-2 border-cyan-300/30 rounded-b-[40px] outline-double outline-cyan-100/80 container w-full p-6 space-y-6">
-          <DashboardHeader onCheckIn={() => setIsCheckInOpen(true)} />
+          <ReceptionistDashboardHeader onCheckIn={() => setIsCheckInOpen(true)} />
 
           {/* Stats Cards */}
           <div className="grid md:grid-cols-3 gap-6">

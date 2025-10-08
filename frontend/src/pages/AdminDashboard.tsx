@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { AdminDashboardHeader } from "@/components/AdminDashboardHeader";
+import { NewPatientModal } from '@/components/NewPatientModal';
+import { NewAppointmentModal } from '@/components/NewAppointmentModal';
+import { useState } from 'react';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { useState } from "react";
 import { staffAPI } from "@/api/api";
 
 export default function AdminDashboard() {
@@ -24,12 +26,20 @@ export default function AdminDashboard() {
     }
   }
 
+  const [isNewPatientOpen, setIsNewPatientOpen] = useState(false);
+  const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
+
+  const handleNewPatient = () => setIsNewPatientOpen(true);
+  const handleNewAppointment = () => setIsNewAppointmentOpen(true);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-secondary">
         <AppSidebar activeView="admin" setActiveView={() => {}} />
         <div className="container p-6">
-          <DashboardHeader onCheckIn={() => {}} />
+          <AdminDashboardHeader onNewPatient={handleNewPatient} onNewAppointment={handleNewAppointment} />
+          <NewPatientModal open={isNewPatientOpen} onOpenChange={setIsNewPatientOpen} />
+          <NewAppointmentModal open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen} />
           <Card>
             <CardHeader>
               <CardTitle>Register Staff</CardTitle>
