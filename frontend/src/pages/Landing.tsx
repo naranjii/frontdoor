@@ -71,7 +71,7 @@ export default function Landing() {
                         </div>
                     </div>
                     <Button asChild>
-                        <Link to="/login">Acesso à Plataforma</Link>
+                        <Link to="/login">Acesso</Link>
                     </Button>
                 </div>
             </header>
@@ -86,14 +86,11 @@ export default function Landing() {
                         </span>
                     </h1>
                     <p className="text-xl text-muted-foreground mb-8 max-w-4xl mx-auto">
-                        Simplifique a rotina da sua clínica ou hospital com uma plataforma integrada. Da recepção do paciente ao terapeuta, coodernação e financeiro, controle tudo em um só lugar.
+                        Simplifique a rotina da sua clínica ou hospital com uma plataforma integrada. Da recepção do paciente ao terapeuta e o coordenador, centralize a gestão de prontuários, agendamentos e portaria tudo em um só lugar.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button size="lg" asChild>
-                            <Link to="/login">Começar</Link>
-                        </Button>
-                        <Button variant="outline" size="lg">
-                            Agendar Demonstração
+                            <Link to="/login">Acesse sua instituição</Link>
                         </Button>
                     </div>
                 </div>
@@ -143,7 +140,7 @@ export default function Landing() {
                             Painéis de Controle por Função
                         </h2>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Cada membro da equipe tem acesso a um painel de controle adaptado às suas responsabilidades, com ferramentas e permissões específicas.
+                            Cada membro da equipe tem acesso a um painel de controle adaptado à sua rotina, com permissões específicas e ferramentas personalizadas.
                         </p>
                     </div>
 
@@ -171,10 +168,10 @@ export default function Landing() {
             <section className="py-20 px-4 bg-gradient-primary">
                 <div className="container mx-auto text-center">
                     <h2 className="text-3xl font-bold text-primary-foreground mb-4">
-                        Pronto para Transformar sua Instituição?
+                        Pronto para modernizar seu atendimento?
                     </h2>
                     <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-                        Junte-se a centenas de instituições de saúde que já transformaram suas operações com o Frontdoor.
+                        Junte-se a outras instituições de saúde que já transformaram suas operações com Hospidata.
                     </p>
                     <Button variant="secondary" size="lg" asChild>
                         <Link to="/login">Comece sua Jornada</Link>
@@ -191,7 +188,7 @@ export default function Landing() {
                                 <Building2 className="w-4 h-4 text-primary-foreground" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-foreground">Frontdoor</h3>
+                                <h3 className="font-semibold text-foreground">Hospidata</h3>
                                 <p className="text-xs text-muted-foreground">por OTWare</p>
                             </div>
                         </div>
