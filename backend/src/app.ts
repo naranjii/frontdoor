@@ -25,4 +25,11 @@ app.use("/patients", patientRoutes);
 // Logbook
 app.use("/logbooks", logbookRoutes);
 
+// Error handler: ensure JSON responses for uncaught errors
+app.use((err: any, _req: any, res: any, _next: any) => {
+	console.error(err);
+	const status = err?.status || 500;
+	res.status(status).json({ error: err?.message || 'Internal Server Error' });
+});
+
 export default app;
