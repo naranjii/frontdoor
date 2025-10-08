@@ -10,18 +10,18 @@ import { DashboardHeader } from "@/components/DashboardHeader"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import { ReceptionTabs } from "@/components/ReceptionTabs"
+import { useQuery } from '@tanstack/react-query'
+import { patientAPI, logbookAPI } from '@/api/api'
 
 export default function ReceptionistDashboard() {
   const [activeView, setActiveView] = useState("logbook");
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
-  const [isAdmin, getRole] = useState('');
-  const mockQueue = [
-    { id: 1, name: "John Doe", type: "Paciente", time: "10:30 AM", status: "waiting", therapist: "Dr. Sarah Johnson", purpose: "Joining to chega junto" },
-  ]
+  const { data: patients } = useQuery<any>({ queryKey: ['patients'], queryFn: () => patientAPI.getAll().then(r => r.data) })
+  const { data: logbooks } = useQuery<any>({ queryKey: ['logbooks'], queryFn: () => logbookAPI.getAll().then(r => r.data) })
 
-  const mockExpectedArrivals = [
-    { id: 1, name: "Alice Brown", time: "11:30 AM", therapist: "Dr. Sarah Johnson", type: "Fisioterapia" },
-  ]
+  const patientList = (patients || []) as any[]
+  const mockQueue = patientList.slice(0,3)
+  const mockExpectedArrivals = patientList.slice(3,5)
 
 
 
@@ -42,7 +42,7 @@ export default function ReceptionistDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-center">24</div>
+                <div className="text-2xl font-bold text-center">{(logbooks || []).length}</div>
               </CardContent>
             </Card>
 
