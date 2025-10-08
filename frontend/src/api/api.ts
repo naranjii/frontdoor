@@ -76,9 +76,9 @@ export const patientAPI = {
     const payload = createdById ? { ...data, createdById } : data;
     return api.post('/patients', payload);
   },
-  getAll: (filters?: { name?: string; healthcare?: string }) => api.get('/patients', { params: filters }),
+  getAll: (filters?: { name?: string; healthcare?: string; supportLevel?: number }) => api.get('/patients', { params: filters }),
   getById: (id: string) => api.get(`/patients/${id}`),
-  update: (id: string, data: { name?: string; healthcare?: string; age?: number }) =>
+  update: (id: string, data: { name?: string; healthcare?: string; age?: number; patientCode?: number; supportLevel?: number; driveLink?: string; notes?: string }) =>
     api.put(`/patients/${id}`, data),
   delete: (id: string) => api.delete(`/patients/${id}`),
 };
