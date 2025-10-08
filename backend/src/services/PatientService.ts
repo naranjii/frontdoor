@@ -3,10 +3,14 @@ import { z } from "zod";
 import * as patientRepository from "../repositories/patientRepository";
 
 const PatientSchema = z.object({
-  patientCode: z.number(),
-  supportLevel: z.number(),
-  driveLink: z.string().url().optional(),
-  createdById: z.number(),
+  name: z.string().min(1, "Name is required"),
+  age: z.number().min(0),
+  healthcare: z.string().optional(),
+  notes: z.string().optional(),
+  patientCode: z.number().optional(),
+  supportLevel: z.number().optional(),
+  driveLink: z.string().optional(),
+  createdById: z.string(),
   checked: z.boolean().optional(),
 });
 
@@ -15,7 +19,7 @@ export type PatientInput = z.infer<typeof PatientSchema>;
 export class PatientService {
   static async create(data: PatientInput) {
     const parsed = PatientSchema.parse(data);
-    return patientRepository.create(parsed);
+    return patientRepository.create(parsed as any);
   }
 
   static async getAll(filters?: Partial<PatientInput>) {

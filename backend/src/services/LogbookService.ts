@@ -14,7 +14,7 @@ export type LogbookInput = z.infer<typeof LogbookSchema>;
 export class LogbookService {
   static async create(data: LogbookInput) {
     const parsed = LogbookSchema.parse(data);
-    return logbookRepository.create(parsed);
+    return logbookRepository.create(parsed as any);
   }
 
   static async getAll() {

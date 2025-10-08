@@ -12,7 +12,7 @@ export type GuestInput = z.infer<typeof GuestSchema>;
 export class GuestService {
   static async create(data: GuestInput) {
     const parsed = GuestSchema.parse(data);
-    return guestRepository.create(parsed);
+    return guestRepository.create(parsed as any);
   }
 
   static async getAll() {
