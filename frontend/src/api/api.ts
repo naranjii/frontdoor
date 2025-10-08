@@ -82,3 +82,13 @@ export const logbookAPI = {
     api.put(`/logbook/${id}`, data),
   delete: (id: string) => api.delete(`/logbook/${id}`),
 };
+
+// ================= Appointment API =================
+export const appointmentAPI = {
+  create: (data: { createdById: number; patientId?: string; guestId?: string; scheduledAt?: string | Date }) =>
+    api.post('/appointments', data),
+  getAll: (filters?: any) => api.get('/appointments', { params: filters }),
+  getById: (id: string) => api.get(`/appointments/${id}`),
+  update: (id: string, data: any) => api.put(`/appointments/${id}`, data),
+  delete: (id: string) => api.delete(`/appointments/${id}`),
+};
