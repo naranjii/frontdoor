@@ -6,12 +6,12 @@ import { StaffRequest } from '../interfaces/StaffRequest';
 // Pending refactor: 'payload as JwtPayLoad' => StaffRequest
 
 export interface StaffJwtPayload {
-  id: number;
-  role: 'ADMIN' | 'STAFF';
+  id: string;
+  role: 'ADMIN' | 'RECEPTIONIST' | 'COORDINATOR';
 }
 
 dotenv.config();
-export const staffMiddleware = (requiredRole?: 'ADMIN') => {
+export const staffMiddleware = (requiredRole?: 'ADMIN' | 'RECEPTIONIST' | 'COORDINATOR') => {
   return (req: StaffRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

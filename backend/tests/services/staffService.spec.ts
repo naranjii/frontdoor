@@ -12,7 +12,7 @@ describe('StaffService', () => {
     const spy = vi.spyOn(staffRepository as any, 'create').mockResolvedValue({ id: 's1' })
   // bcrypt.hash returns a Promise<string>
   vi.spyOn(bcrypt, 'hash').mockImplementation(async () => 'hashed' as any)
-    const res = await StaffService.register({ institutionName: 'X', username: 'u', name: 'n', password: 'p', role: 'STAFF' } as any)
+  const res = await StaffService.register({ institutionName: 'X', username: 'u', name: 'n', password: 'p', role: 'RECEPTIONIST' } as any)
     expect(spy).toHaveBeenCalled()
     expect(res).toEqual({ id: 's1' })
   })
