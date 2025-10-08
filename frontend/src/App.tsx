@@ -7,8 +7,20 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import ReceptionistDashboard from "./pages/ReceptionistDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import CoordinatorDashboard from "./pages/CoordinatorDashboard";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./routes/PrivateRoute";
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
+
+function RoleDashboard() {
+  const auth = useContext(AuthContext);
+  const role = auth?.user?.role;
+  if (role === 'ADMIN') return <AdminDashboard />;
+  if (role === 'COORDINATOR') return <CoordinatorDashboard />;
+  return <ReceptionistDashboard />;
+}
 
 const queryClient = new QueryClient();
 const App = () => (
@@ -26,7 +38,8 @@ const App = () => (
               path="/dashboard"
               element={
                 <PrivateRoute>
-                  <ReceptionistDashboard />
+                  {/* Render dashboard by role */}
+                  <RoleDashboard />
                 </PrivateRoute>
               }
             />
