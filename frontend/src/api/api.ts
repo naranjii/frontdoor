@@ -26,6 +26,23 @@ const getInstitutionName = (): string | undefined => {
   return stored ?? undefined;
 };
 
+/**
+ * Try to extract the current staff id from the JWT token payload.
+ */
+const getStaffId = (): string | undefined => {
+  try {
+    const token = getToken();
+    if (!token) return undefined;
+    const parts = token.split('.');
+    if (parts.length < 2) return undefined;
+    const payload = JSON.parse(atob(parts[1]));
+    if (payload && (payload.id || payload.sub)) return String(payload.id ?? payload.sub);
+  } catch (e) {
+    // ignore
+  }
+  return undefined;
+};
+
 const api = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
@@ -54,7 +71,11 @@ export const staffAPI = {
 
 // ================= Patient API =================
 export const patientAPI = {
-  create: (data: { name: string; healthcare: string; age?: number }) => api.post('/patients', data),
+  create: (data: { name: string; age?: number; healthcare?: string; patientCode?: number; supportLevel?: number; driveLink?: string; notes?: string }) => {
+    const createdById = getStaffId();
+    const payload = createdById ? { ...data, createdById } : data;
+    return api.post('/patients', payload);
+  },
   getAll: (filters?: { name?: string; healthcare?: string }) => api.get('/patients', { params: filters }),
   getById: (id: string) => api.get(`/patients/${id}`),
   update: (id: string, data: { name?: string; healthcare?: string; age?: number }) =>
@@ -84,11 +105,18 @@ export const logbookAPI = {
 };
 
 // ================= Appointment API =================
+export type AppointmentDTO = {
+  createdById: number;
+  patientId: string;
+  appointmentAt: string | Date;
+  therapist?: string;
+  notes?: string;
+};
+
 export const appointmentAPI = {
-  create: (data: { createdById: number; patientId?: string; guestId?: string; scheduledAt?: string | Date }) =>
-    api.post('/appointments', data),
-  getAll: (filters?: any) => api.get('/appointments', { params: filters }),
+  create: (data: AppointmentDTO) => api.post('/appointments', data),
+  getAll: (filters?: Record<string, unknown>) => api.get('/appointments', { params: filters }),
   getById: (id: string) => api.get(`/appointments/${id}`),
-  update: (id: string, data: any) => api.put(`/appointments/${id}`, data),
+  update: (id: string, data: Partial<AppointmentDTO>) => api.put(`/appointments/${id}`, data),
   delete: (id: string) => api.delete(`/appointments/${id}`),
 };
