@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { staffAPI } from "@/api/api";
+import { NewStaffModal } from "@/components/NewStaffModal";
 
 export default function AdminDashboard() {
   const [username, setUsername] = useState("");
@@ -26,20 +27,16 @@ export default function AdminDashboard() {
     }
   }
 
-  const [isNewPatientOpen, setIsNewPatientOpen] = useState(false);
-  const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
-
-  const handleNewPatient = () => setIsNewPatientOpen(true);
-  const handleNewAppointment = () => setIsNewAppointmentOpen(true);
+  const [isNewStaffOpen, setIsNewStaffOpen] = useState(false);
+  const handleNewStaff = () => setIsNewStaffOpen(true);
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-secondary">
         <AppSidebar activeView="admin" setActiveView={() => {}} />
         <div className="container p-6">
-          <AdminDashboardHeader onNewPatient={handleNewPatient} onNewAppointment={handleNewAppointment} />
-          <NewPatientModal open={isNewPatientOpen} onOpenChange={setIsNewPatientOpen} />
-          <NewAppointmentModal open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen} />
+          <AdminDashboardHeader onNewStaff={handleNewStaff} />
+          <NewStaffModal open={isNewStaffOpen} onOpenChange={setIsNewStaffOpen} />
           <Card>
             <CardHeader>
               <CardTitle>Register Staff</CardTitle>
