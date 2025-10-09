@@ -18,8 +18,8 @@ export const AdminDashboardHeader = ({ onNewStaff }: AdminHeaderProps) => {
               <span className="text-primary-foreground font-bold text-lg">F</span>
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-foreground">Painel do Admin</h1>
-              <p className="text-sm text-muted-foreground">Configurações e gestão de usuários</p>
+              <h1 className="text-xl font-semibold text-foreground">Painel Administrador</h1>
+              <p className="text-sm text-muted-foreground">Gestor de acesso institucional</p>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@ export const AdminDashboardHeader = ({ onNewStaff }: AdminHeaderProps) => {
         <div className="flex items-center gap-3">
           <Button onClick={onNewStaff} className="h-12 px-4 rounded-md bg-gradient-primary text-primary-foreground font-semibold">
             <Plus className="mr-2 h-4 w-4" />
-            New Staff
+            Novo Funcionário
           </Button>
         </div>
       </div>

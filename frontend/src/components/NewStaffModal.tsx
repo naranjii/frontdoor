@@ -38,34 +38,33 @@ export const NewStaffModal = ({ open, onOpenChange }: Props) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md bg-card border-border/50 shadow-medium">
         <DialogHeader>
-          <DialogTitle>New Staff</DialogTitle>
+          <DialogTitle>Novo Acesso Institucional</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="susername">Username</Label>
-            <Input id="susername" value={username} onChange={(e) => setUsername(e.target.value)} />
-          </div>
-          <div>
-            <Label htmlFor="sname">Full Name</Label>
+            <Label htmlFor="sname">Nome de exibição</Label>
             <Input id="sname" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
-            <Label htmlFor="spassword">Password</Label>
+            <Label htmlFor="susername">Nome de acesso</Label>
+            <Input id="susername" value={username} onChange={(e) => setUsername(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="spassword">Senha</Label>
             <Input id="spassword" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <div>
-            <Label htmlFor="srole">Role</Label>
-            <select id="srole" value={role} onChange={(e) => setRole(e.target.value as 'ADMIN' | 'RECEPTIONIST' | 'COORDINATOR')} className="select">
-              <option value="ADMIN">Admin</option>
-              <option value="RECEPTIONIST">Receptionist</option>
-              <option value="COORDINATOR">Coordinator</option>
+            <Label htmlFor="srole">Permissão &nbsp;&nbsp;</Label>
+            <select id="srole" value={role} onChange={(e) => setRole(e.target.value as 'RECEPTIONIST' | 'COORDINATOR')} className="select">
+              <option value="RECEPTIONIST">&nbsp;&nbsp;• Recepcionista&nbsp;&nbsp;</option>
+              <option value="COORDINATOR">&nbsp;&nbsp;• Coordenador&nbsp;&nbsp;</option>
             </select>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSubmit} disabled={!name}>Create</Button>
+            <Button variant="outline" onClick={handleClose}>Cancelar</Button>
+            <Button onClick={handleSubmit} disabled={!name}>Registrar</Button>
           </div>
         </div>
       </DialogContent>

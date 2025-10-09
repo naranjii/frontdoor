@@ -5,7 +5,7 @@ import { NewAppointmentModal } from '@/components/NewAppointmentModal';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { patientAPI } from '@/api/api';
 import { EditPatientModal } from '@/components/EditPatientModal';
@@ -50,6 +50,30 @@ export default function CoordinatorDashboard(){
     queryClient.invalidateQueries({ queryKey: ['patients'] });
   }
 
+  // Keep track of previous modal/editing states so we only refetch when a
+  // change actually happened (for example: new patient modal closed or an
+  // edit finished). This avoids refetches on every render.
+  const prevNewPatientOpen = useRef(isNewPatientOpen);
+  const prevEditingPatient = useRef(editingPatient);
+
+  useEffect(() => {
+    // If the New Patient modal was open and now closed, refetch patients
+    if (prevNewPatientOpen.current && !isNewPatientOpen) {
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+    }
+    prevNewPatientOpen.current = isNewPatientOpen;
+  }, [isNewPatientOpen, queryClient]);
+
+  useEffect(() => {
+    // If we were editing a patient and editingPatient became undefined,
+    // assume the edit finished or was cancelled and refetch the list so the
+    // UI stays in sync.
+    if (prevEditingPatient.current && !editingPatient) {
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+    }
+    prevEditingPatient.current = editingPatient;
+  }, [editingPatient, queryClient]);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-secondary">
@@ -75,9 +99,9 @@ export default function CoordinatorDashboard(){
                     <div className="text-sm text-muted-foreground">{p.healthcare ?? '—'}</div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={() => setShowingPatient(p)}>SHOW + INFO</Button>
-                    <Button onClick={() => setEditingPatient(p)}>Edit</Button>
-                    <Button variant="destructive" onClick={() => handleDelete(p.id)}>Delete</Button>
+                    <Button variant="outline" onClick={() => setShowingPatient(p)}>+ Informações</Button>
+                    <Button onClick={() => setEditingPatient(p)}>Editar</Button>
+                    <Button variant="destructive" onClick={() => handleDelete(p.id)}>Remover</Button>
                   </div>
                 </CardHeader>
                 <CardContent>
