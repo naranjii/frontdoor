@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { patientAPI } from '@/api/api';
+import { useAuth } from '@/context/AuthContext';
 
 interface Props {
     open: boolean;
@@ -20,12 +21,18 @@ export const NewPatientModal = ({ open, onOpenChange }: Props) => {
     const [driveLink, setDriveLink] = useState('');
     const [notes, setNotes] = useState('');
     const { toast } = useToast();
+    const auth = useAuth();
 
     const handleClose = () => onOpenChange(false);
 
     const handleSubmit = async () => {
         try {
-            await patientAPI.create({ name, age, healthcare: healthcare || undefined, patientCode, supportLevel, driveLink: driveLink || undefined, notes: notes || undefined });
+                const staffId = auth.user?.id;
+                if (!staffId) {
+                    toast({ title: 'Unauthorized', description: 'No staff id found, please login' });
+                    return;
+                }
+                await patientAPI.create({ name, age, healthcare: healthcare || undefined, patientCode, supportLevel, driveLink: driveLink || undefined, notes: notes || undefined, createdById: staffId });
             toast({ title: 'Paciente criado', description: `${name} criado com sucesso` });
             handleClose();
             setName('');

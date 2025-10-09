@@ -5,6 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { appointmentAPI } from '@/api/api';
+import { useQuery } from '@tanstack/react-query';
+import { patientAPI } from '@/api/api';
+import { useAuth } from '@/context/AuthContext';
 
 interface Props {
   open: boolean;
@@ -20,10 +23,20 @@ export const NewAppointmentModal = ({ open, onOpenChange }: Props) => {
 
   const handleClose = () => onOpenChange(false);
 
+  const { data: patientsResp } = useQuery<Patient[]>({ queryKey: ['patients-select'], queryFn: () => patientAPI.getAll().then(r => r.data) });
+
+  type Patient = { id: string; name: string; patientCode?: number };
+
+  const auth = useAuth();
+
   const handleSubmit = async () => {
     try {
-      // TODO: replace createdById with real staff id from auth context or token
-      await appointmentAPI.create({ createdById: 1, patientId, appointmentAt: appointmentAt ? new Date(appointmentAt) : new Date(), therapist: therapist || undefined, notes: notes || undefined });
+      const staffId = auth.user?.id;
+      if (!staffId) {
+        toast({ title: 'Unauthorized', description: 'No staff id found, please login' });
+        return;
+      }
+      await appointmentAPI.create({ createdById: staffId, patientId, appointmentAt: appointmentAt ? new Date(appointmentAt) : new Date(), therapist: therapist || undefined, notes: notes || undefined });
       toast({ title: 'Appointment created', description: `Appointment scheduled` });
       handleClose();
       setPatientId('');
@@ -44,8 +57,13 @@ export const NewAppointmentModal = ({ open, onOpenChange }: Props) => {
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="patientId">Patient ID</Label>
-            <Input id="patientId" value={patientId} onChange={(e) => setPatientId(e.target.value)} />
+            <Label htmlFor="patientId">Patient</Label>
+            <select id="patientId" className="input w-full" value={patientId} onChange={(e) => setPatientId(e.target.value)}>
+              <option value="">-- Select patient --</option>
+              {(patientsResp ?? []).map((p: Patient) => (
+                <option key={p.id} value={p.id}>{p.name}{p.patientCode ? ` — ${p.patientCode}` : ''}</option>
+              ))}
+            </select>
           </div>
           <div>
             <Label htmlFor="therapist">Therapist (optional)</Label>
