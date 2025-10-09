@@ -29,19 +29,8 @@ const getInstitutionName = (): string | undefined => {
 /**
  * Try to extract the current staff id from the JWT token payload.
  */
-const getStaffId = (): string | undefined => {
-  try {
-    const token = getToken();
-    if (!token) return undefined;
-    const parts = token.split('.');
-    if (parts.length < 2) return undefined;
-    const payload = JSON.parse(atob(parts[1]));
-    if (payload && (payload.id || payload.sub)) return String(payload.id ?? payload.sub);
-  } catch (e) {
-    // ignore
-  }
-  return undefined;
-};
+// Note: `createdById` should be supplied by callers (from AuthContext). We
+// intentionally avoid extracting it here to keep side-effects explicit.
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -65,15 +54,15 @@ export const staffAPI = {
     const payload = institution ? { ...data, institution } : data;
     return api.post('/staff/register', payload);
   },
-  login: (data: { username: string; password: string;  }) => api.post('/staff/login', data),
+  login: (data: { username: string; password: string; }) => api.post('/staff/login', data),
   getAll: () => api.get('/staff'),
 };
 
 // ================= Patient API =================
 export const patientAPI = {
-  create: (data: { name: string; age?: number; healthcare?: string; patientCode?: number; supportLevel?: number; driveLink?: string; notes?: string }) => {
-    const createdById = getStaffId();
-    const payload = createdById ? { ...data, createdById } : data;
+  create: (data: { name: string; age?: number; healthcare?: string; patientCode?: number; supportLevel?: number; driveLink?: string; notes?: string; createdById: string }) => {
+    // Caller must pass createdById (from AuthContext) — attach if present.
+    const payload = data.createdById ? { ...data, createdById: data.createdById } : data;
     return api.post('/patients', payload);
   },
   getAll: (filters?: { name?: string; healthcare?: string; supportLevel?: number }) => api.get('/patients', { params: filters }),
@@ -105,18 +94,19 @@ export const logbookAPI = {
 };
 
 // ================= Appointment API =================
-export type AppointmentDTO = {
-  createdById: number;
-  patientId: string;
-  appointmentAt: string | Date;
-  therapist?: string;
-  notes?: string;
-};
 
-export const appointmentAPI = {
-  create: (data: AppointmentDTO) => api.post('/appointments', data),
+export const appointmentAPI = {  
+  create: (data: { createdById: string; patientId: string; appointmentAt: Date; therapist?: string; notes?: string; }) => {
+    return api.post('/appointments', data);
+  },
   getAll: (filters?: Record<string, unknown>) => api.get('/appointments', { params: filters }),
   getById: (id: string) => api.get(`/appointments/${id}`),
-  update: (id: string, data: Partial<AppointmentDTO>) => api.put(`/appointments/${id}`, data),
+  update: (id: string, data: {
+    createdById: string;
+    patientId: string;
+    appointmentAt: Date;
+    therapist?: string;
+    notes?: string;
+  }) => api.put(`/appointments/${id}`, data),
   delete: (id: string) => api.delete(`/appointments/${id}`),
 };
