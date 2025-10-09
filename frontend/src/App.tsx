@@ -17,7 +17,7 @@ import { AuthContext } from './context/AuthContext';
 function RoleDashboard() {
   const auth = useContext(AuthContext);
   const role = auth?.user?.role;
-  if (role === 'ADMIN') return <AdminDashboard />;
+  if (role === 'ADMIN') return <div><AdminDashboard /><CoordinatorDashboard /><ReceptionistDashboard /></div>;
   if (role === 'COORDINATOR') return <CoordinatorDashboard />;
   return <ReceptionistDashboard />;
 }
