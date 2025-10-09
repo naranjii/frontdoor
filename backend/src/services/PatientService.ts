@@ -8,7 +8,7 @@ const PatientSchema = z.object({
   healthcare: z.string().optional(),
   notes: z.string().optional(),
   patientCode: z.number().optional(),
-  supportLevel: z.number().optional(),
+  supportLevel: z.number().max(5).optional(),
   driveLink: z.string().optional(),
   createdById: z.string(),
   checked: z.boolean().optional(),
