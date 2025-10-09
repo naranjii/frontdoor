@@ -1,12 +1,18 @@
 import { z } from "zod";
 import * as appointmentRepository from "../repositories/appointmentRepository";
+import { notDeepEqual } from "assert";
 
 const AppointmentSchema = z.object({
-  createdById: z.number(),
+  createdById: z.string(),
   patientId: z.string().uuid().optional(),
   guestId: z.string().uuid().optional(),
-  scheduledAt: z.date().optional(),
-});
+  appointmentAt: z.preprocess(
+    (val) => (typeof val === "string" ? new Date(val) : val),
+    z.date().optional()
+  ),
+  therapist: z.string().optional(),
+  notes: z.string().optional()
+  });
 
 export type AppointmentInput = z.infer<typeof AppointmentSchema>;
 
