@@ -31,16 +31,16 @@ export default function CoordinatorDashboard() {
   const [showingPatient, setShowingPatient] = useState<Patient | undefined>(undefined);
 
   const queryClient = useQueryClient();
-
+  // Get active patients only
   const { data: patients } = useQuery<Patient[]>({
     queryKey: ['patients', search, filterSupport],
     queryFn: () =>
       patientAPI
         .getAll(search ? { name: search, supportLevel: filterSupport } : {})
-        .then(r => r.data.filter(patient => patient.isActive)) // filter here
+        .then(r => r.data.filter(patient => patient.isActive))
   });
 
-
+  // Soft deletes patients (isActive:false)
   const deleteMutation = useMutation({
     mutationFn: (id: string) => patientAPI.update(id, { isActive: false }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['patients'] }),

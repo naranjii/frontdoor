@@ -55,7 +55,13 @@ export const staffAPI = {
     return api.post('/staff/register', payload);
   },
   login: (data: { username: string; password: string; }) => api.post('/staff/login', data),
-  getAll: () => api.get('/staff'),
+  getAll: async () => {
+    const res = await api.get('/staff');
+    return res.data.data; // já retorna array puro
+  },
+  deactivate: (id: string) => api.put(`/staff/${id}`, { isActive: false }),
+  update: (id: string, data: { name?: string; role?: 'ADMIN' | 'RECEPTIONIST' | 'COORDINATOR'; isActive?: boolean }) => api.put(`/staff/${id}`, data),
+  getById: (id: string) => api.get(`/staff/${id}`),
 };
 
 // ================= Patient API =================
@@ -95,7 +101,7 @@ export const logbookAPI = {
 
 // ================= Appointment API =================
 
-export const appointmentAPI = {  
+export const appointmentAPI = {
   create: (data: { createdById: string; patientId: string; appointmentAt: Date; therapist?: string; notes?: string; }) => {
     return api.post('/appointments', data);
   },
