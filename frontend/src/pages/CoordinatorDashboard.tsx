@@ -22,7 +22,7 @@ type Patient = {
   notes?: string;
 };
 
-export default function CoordinatorDashboard(){
+export default function CoordinatorDashboard() {
   const [isNewPatientOpen, setIsNewPatientOpen] = useState(false);
   const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -32,10 +32,17 @@ export default function CoordinatorDashboard(){
 
   const queryClient = useQueryClient();
 
-  const { data: patients } = useQuery<Patient[]>({ queryKey: ['patients', search, filterSupport], queryFn: () => patientAPI.getAll(search ? { name: search, supportLevel: filterSupport } : {}).then(r => r.data) })
+  const { data: patients } = useQuery<Patient[]>({
+    queryKey: ['patients', search, filterSupport],
+    queryFn: () =>
+      patientAPI
+        .getAll(search ? { name: search, supportLevel: filterSupport } : {})
+        .then(r => r.data.filter(patient => patient.isActive)) // filter here
+  });
+
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => patientAPI.delete(id),
+    mutationFn: (id: string) => patientAPI.update(id, { isActive: false }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['patients'] }),
   });
 
@@ -77,7 +84,7 @@ export default function CoordinatorDashboard(){
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-secondary">
-        <AppSidebar activeView="coordinator" setActiveView={() => {}} />
+        <AppSidebar activeView="coordinator" setActiveView={() => { }} />
         <div className="container p-6">
           <CoordinatorDashboardHeader onNewPatient={() => setIsNewPatientOpen(true)} onNewAppointment={() => setIsNewAppointmentOpen(true)} />
           <NewPatientModal open={isNewPatientOpen} onOpenChange={setIsNewPatientOpen} />
