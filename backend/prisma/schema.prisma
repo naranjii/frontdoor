@@ -38,15 +38,17 @@ model Staff {
 }
 
 model Guest {
-  id        String   @id @default(uuid())
-  checked   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  contact      String?
+  organization String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   createdById String
   createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
 
-  history Logbook[]
+  logbooks Logbook[]
 }
 
 model Patient {
@@ -96,9 +98,8 @@ model Logbook {
   createdById String
   createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Logbook_createdBy_fkey")
 
-  guestId String?
-  guest   Guest?  @relation(fields: [guestId], references: [id], map: "Logbook_guest_fkey")
-
+  guestId   String?
+  guest     Guest?   @relation(fields: [guestId], references: [id], map: "Logbook_guest_fkey")
   patientId String?
   patient   Patient? @relation(fields: [patientId], references: [id], map: "Logbook_patient_fkey")
 }
