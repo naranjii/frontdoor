@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useQueryClient, useQuery } from '@tanstack/react-query'
+import { patientAPI, guestAPI, logbookAPI } from '@/api/api'
+import { useAuth } from '@/context/AuthContext'
 import {
   Dialog,
   DialogContent,
@@ -16,26 +19,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, UserPlus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-interface CheckInModalProps {
+interface ReceptionModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /** Optional: preselect the visitor type when opening (e.g. 'patient' or 'guest') */
   initialVisitorType?: 'patient' | 'guest';
-  /** Optional: preselect a person's name when opening the modal */
-  initialSelectedPerson?: string;
+  /** Optional: preselect a person's id when opening the modal */
+  initialSelectedPersonId?: string;
+  /** Optional: preselect person type when opening */
+  initialPersonType?: 'patient' | 'guest';
 }
 
-const mockPatients = [
-  { id: 1, name: "John Smith", phone: "+1 (555) 123-4567" },
-  { id: 2, name: "David Johnson", phone: "+1 (555) 345-6789" },
-  { id: 3, name: "Sarah Wilson", phone: "+1 (555) 456-7890" },
-];
+// We'll fetch patients/guests via react-query when needed
 
-const mockGuests = [
-  { id: 1, name: "Maria Garcia", phone: "+1 (555) 234-5678" },
-];
-
-export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSelectedPerson }: CheckInModalProps) => {
+export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initialSelectedPersonId, initialPersonType }: ReceptionModalProps) => {
   const [step, setStep] = useState(1);
   const [visitorType, setVisitorType] = useState("");
   const [isNewRegistration, setIsNewRegistration] = useState(false);
@@ -48,7 +45,7 @@ export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSe
     purpose: "",
     notes: ""
   });
-  
+
   const { toast } = useToast();
 
   const handleReset = () => {
@@ -78,11 +75,42 @@ export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSe
         setVisitorType(initialVisitorType);
         setStep(2);
       }
-      if (initialSelectedPerson) {
-        setSelectedPerson(initialSelectedPerson);
+      if (initialSelectedPersonId && initialPersonType) {
+        // when opening with an id, try to resolve to a name for selection display
+        (async () => {
+          try {
+            if (initialPersonType === 'patient') {
+              const resp = await patientAPI.getById(initialSelectedPersonId)
+              setSelectedPerson(resp.data.name)
+            } else {
+              const resp = await guestAPI.getById(initialSelectedPersonId)
+              setSelectedPerson(resp.data.name)
+            }
+          } catch (e) {
+            // ignore
+          }
+        })()
       }
     }
-  }, [open, initialVisitorType, initialSelectedPerson]);
+  }, [open, initialVisitorType, initialSelectedPersonId, initialPersonType]);
+
+  const qc = useQueryClient()
+  const auth = useAuth()
+  const staffId = auth.user?.id || ''
+
+  const { data: patientsResp } = useQuery({
+    queryKey: ['reception-patients', searchTerm],
+    queryFn: () => patientAPI.getAll(searchTerm ? { name: searchTerm } : undefined).then(r => r.data),
+    enabled: step === 2 && visitorType === 'patient',
+  });
+
+  const { data: guestsResp } = useQuery({
+    queryKey: ['reception-guests', searchTerm],
+    queryFn: () => guestAPI.getAll(searchTerm ? { name: searchTerm } : undefined).then(r => r.data),
+    enabled: step === 2 && visitorType === 'guest',
+  });
+  const patients = patientsResp || []
+  const guests = guestsResp || []
 
   const handleNext = () => {
     if (step === 1 && visitorType) {
@@ -99,20 +127,62 @@ export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSe
   };
 
   const handleSubmit = () => {
-    toast({
-      title: "Check-in successful",
-      description: `${formData.name || selectedPerson} has been checked in.`,
-    });
-    handleClose();
+    // if checking in a patient, toggle checked flag
+    (async () => {
+      try {
+        if (visitorType === 'patient') {
+          // if new registration, create patient first
+          let patientId = undefined
+          if (isNewRegistration) {
+            const payload: { name: string; createdById: string; age?: number } = { name: formData.name, createdById: '' }
+            const createPayload = { ...(payload as { name: string; createdById: string; age?: number }), createdById: staffId } as Parameters<typeof patientAPI.create>[0]
+            const createResp = await patientAPI.create(createPayload)
+            patientId = createResp.data.id
+          } else {
+            const found = patients.find(p => p.name === selectedPerson)
+            patientId = found?.id
+          }
+          if (patientId) {
+            // toggle checked to true
+            await patientAPI.update(patientId, { checked: true } as unknown as { name?: string; healthcare?: string; age?: number; patientCode?: number; supportLevel?: number; driveLink?: string; notes?: string })
+            await logbookAPI.create({ staffId, patientId, action: 'check-in' })
+          }
+        }
+
+        if (visitorType === 'guest') {
+          let guestId = undefined
+          if (isNewRegistration) {
+            const createResp = await guestAPI.create({ name: formData.name })
+            guestId = createResp.data.id
+          } else {
+            const found = guests.find(g => g.name === selectedPerson)
+            guestId = found?.id
+          }
+          if (guestId) {
+            // mark guest as checked if endpoint supports it
+            await guestAPI.update(guestId, { name: formData.name })
+            await logbookAPI.create({ staffId, guestId, action: 'check-in' })
+          }
+        }
+
+        toast({
+          title: "Check-in successful",
+          description: `${formData.name || selectedPerson} has been checked in.`,
+        });
+        qc.invalidateQueries({ queryKey: ['reception-patients'] });
+        qc.invalidateQueries({ queryKey: ['reception-guests'] });
+        handleClose();
+      } catch (err) {
+        toast({ title: 'Error', description: 'Check-in failed' })
+      }
+    })()
   };
 
-  const getCurrentList = () => {
-    return visitorType === "patient" ? mockPatients : mockGuests;
-  };
-
-  const filteredList = getCurrentList().filter(person =>
-    person.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredList = (visitorType === 'patient' ? patients : guests).filter((person: { name?: string }) =>
+    (person.name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -204,9 +274,8 @@ export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSe
                     {filteredList.map((person) => (
                       <Card
                         key={person.id}
-                        className={`transition-smooth cursor-pointer hover:shadow-soft ${
-                          selectedPerson === person.name ? "ring-2 ring-primary bg-primary/5" : ""
-                        }`}
+                        className={`transition-smooth cursor-pointer hover:shadow-soft ${selectedPerson === person.name ? "ring-2 ring-primary bg-primary/5" : ""
+                          }`}
                         onClick={() => setSelectedPerson(person.name)}
                       >
                         <CardContent className="p-3">
@@ -273,7 +342,7 @@ export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSe
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label htmlFor="notes">Additional Notes (Optional)</Label>
                 <Textarea
@@ -296,7 +365,7 @@ export const CheckInModal = ({ open, onOpenChange, initialVisitorType, initialSe
             >
               {step === 1 ? "Cancel" : "Back"}
             </Button>
-            
+
             {step < 3 ? (
               <Button
                 onClick={handleNext}
