@@ -53,6 +53,7 @@ model Guest {
 
 model Patient {
   id           String  @id @default(uuid())
+  isActive     Boolean @default(true)
   name         String
   age          Int
   healthcare   String?
