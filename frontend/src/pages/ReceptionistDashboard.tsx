@@ -5,7 +5,7 @@ import {
   Clock,
 
 } from "lucide-react"
-import { CheckInModal } from "@/components/CheckInModal"
+import { ReceptionModal } from "@/components/ReceptionModal"
 import { ReceptionistDashboardHeader } from "@/components/ReceptionistDashboardHeader"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
@@ -22,7 +22,8 @@ export default function ReceptionistDashboard() {
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [selectedPatientName, setSelectedPatientName] = useState<string | undefined>(undefined);
+  const [selectedPersonId, setSelectedPersonId] = useState<string | undefined>(undefined);
+  const [selectedPersonType, setSelectedPersonType] = useState<'patient' | 'guest' | undefined>(undefined);
   const [isCheckInOpenLocal, setIsCheckInOpenLocal] = useState(false);
 
   // debounce search input
@@ -31,26 +32,7 @@ export default function ReceptionistDashboard() {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // search by ID on Enter if the term looks like a UUID
-  const handleSearchKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchTerm.trim()) {
-      const maybeId = searchTerm.trim();
-      // very loose UUID check
-      const uuidRegex = /^[0-9a-fA-F-]{36,}$/;
-      if (uuidRegex.test(maybeId)) {
-        try {
-          const res = await patientAPI.getById(maybeId);
-          const p = res.data;
-          if (p) {
-            setSelectedPatientName(p.name);
-            setIsCheckInOpenLocal(true);
-          }
-        } catch (err) {
-          // ignore, fallback to name search
-        }
-      }
-    }
-  };
+  // reception tabs will handle searching and selecting patients; keep selected name + modal state here
 
   const { data: patients } = useQuery<Patient[]>({ queryKey: ['patients', debouncedSearch], queryFn: () => patientAPI.getAll(debouncedSearch ? { name: debouncedSearch } : undefined).then(r => r.data) })
   const { data: logbooks } = useQuery<Logbook[]>({ queryKey: ['logbooks'], queryFn: () => logbookAPI.getAll().then(r => r.data) })
@@ -78,36 +60,11 @@ export default function ReceptionistDashboard() {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-secondary">
         {/* Sidebar */}
-        <AppSidebar activeView={activeView} setActiveView={setActiveView} />
+        <AppSidebar activeView={activeView} setActiveView={setActiveView} /> {/* TO FIX SIDEBAR ACTIVE VIEW */}
         {/* Header */}
         <div className="border-2 border-cyan-300/30 rounded-b-[40px] outline-double outline-cyan-100/80 container w-full p-6 space-y-6">
           <ReceptionistDashboardHeader onCheckIn={() => setIsCheckInOpen(true)} />
-
-          <div className="pt-4">
-            <input
-              placeholder="Search patients by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              className="input w-full max-w-md"
-            />
-          </div>
-
-          {/* Typeahead results */}
-          {patientList.length > 0 && (
-            <div className="mt-2 max-w-md bg-card p-2 rounded-md shadow-soft">
-              {patientList.slice(0, 6).map((p) => (
-                <div
-                  key={p.id}
-                  className="p-2 cursor-pointer hover:bg-muted rounded-md"
-                  onClick={() => { setSelectedPatientName(p.name); setIsCheckInOpenLocal(true); }}
-                >
-                  <div className="font-medium">{p.name}</div>
-                  {p.healthcare && <div className="text-xs text-muted-foreground">{p.healthcare}</div>}
-                </div>
-              ))}
-            </div>
-          )}
+          {/* patient search / typeahead moved into `ReceptionTabs` "Cadastros" tab */}
 
           {/* Stats Cards */}
           <div className="grid md:grid-cols-3 gap-6">
@@ -143,18 +100,27 @@ export default function ReceptionistDashboard() {
               </CardContent>
             </Card>
           </div>
-          <ReceptionTabs />
+          <ReceptionTabs
+            activeTab={activeView}
+            setActiveTab={setActiveView}
+            onOpenCheckIn={() => setIsCheckInOpen(true)}
+            onOpenCheckInWithPerson={(id?: string, type?: 'patient' | 'guest') => {
+              if (id) setSelectedPersonId(id);
+              if (type) setSelectedPersonType(type);
+              setIsCheckInOpenLocal(true);
+            }}
+          />
 
         </div>
-        <CheckInModal
+        <ReceptionModal
           open={isCheckInOpen}
           onOpenChange={setIsCheckInOpen}
         />
-        <CheckInModal
+        <ReceptionModal
           open={isCheckInOpenLocal}
           onOpenChange={setIsCheckInOpenLocal}
-          initialVisitorType={'patient'}
-          initialSelectedPerson={selectedPatientName}
+          initialPersonType={selectedPersonType}
+          initialSelectedPersonId={selectedPersonId}
         />
       </div>
     </SidebarProvider>

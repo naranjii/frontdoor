@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminDashboardHeader } from "@/components/AdminDashboardHeader";
-import { NewPatientModal } from '@/components/NewPatientModal';
-import { NewAppointmentModal } from '@/components/NewAppointmentModal';
+import { NewPatientModal } from '@/components/modals/NewPatientModal';
+import { NewAppointmentModal } from '@/components/modals/NewAppointmentModal';
 import { useState } from 'react';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { staffAPI } from "@/api/api";
-import { NewStaffModal } from "@/components/NewStaffModal";
+import { NewStaffModal } from "@/components/modals/NewStaffModal";
 import { StaffFields } from "@/components/StaffFields";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
