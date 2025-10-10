@@ -40,8 +40,29 @@ export class StaffController {
     }
   }
 
+  static async update(req: Request, res: Response) {
+    const staffId = req.params.id;
+    if (!staffId) {
+      return res.status(400).json({ error: 'Staff ID is required' });
+    }
+    const { name, role, isActive } = req.body as {
+      name?: string;
+      role?: string;
+      isActive?: boolean;
+    };
+    if (!name && !role && typeof isActive !== 'boolean') {
+      return res.status(400).json({ error: 'At least one field (name, role, isActive) is required to update' });
+    }
+    try {
+      const updatedStaff = await StaffService.update(staffId, { name, role: role as any, isActive });
+      res.json(updatedStaff);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message });
+    }
+  }
+
   static async list(req: Request, res: Response) {
-        try {
+    try {
       const data = await StaffService.list();
       res.json({ data });
     } catch (err: any) {

@@ -33,6 +33,15 @@ export async function create({ institution, username, name, hashedPassword, role
   return result;
 }
 
+export async function update(id: string, data: { name?: string; role?: StaffRole; isActive?: boolean }): Promise<Omit<Staff, "password">> {
+  const staff = await prisma.staff.update({
+    where: { id },
+    data,
+  });
+  const { password, ...result } = staff;
+  return result;
+}
+
 export async function findAll(){
   return prisma.staff.findMany();
 }

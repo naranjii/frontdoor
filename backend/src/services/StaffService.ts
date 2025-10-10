@@ -35,6 +35,10 @@ export async function login(username: string, password: string) {
 	);
 }
 
+export async function update(id: string, data: { name?: string; role?: StaffRole; isActive?: boolean }) {
+	return StaffRepository.update(id, data);
+}
+
 export async function list() {
 	return StaffRepository.findAll();
 }
