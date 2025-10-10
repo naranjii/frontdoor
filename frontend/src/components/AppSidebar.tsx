@@ -13,8 +13,8 @@ import {
 
 const menuItems = [
   { id: "logbook", title: "Livro de Entradas e Saídas", icon: FileText },
-  { id: "registrations", title: "Agendamentos", icon: UserPlus },
-  { id: "client-log", title: "Cadastros", icon: Users },
+  { id: "expected", title: "Agendamentos", icon: UserPlus },
+  { id: "patients", title: "Cadastros", icon: Users },
 ];
 
 interface AppSidebarProps {

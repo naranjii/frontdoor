@@ -5,15 +5,42 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { Input } from "./ui/input";
+import { useQuery } from '@tanstack/react-query'
+import { patientAPI } from '@/api/api'
+import { useEffect, useMemo } from 'react'
+import { guestAPI, appointmentAPI, logbookAPI } from '@/api/api'
 
-export function ReceptionTabs() {
-    const [isCheckInOpen, setIsCheckInOpen] = useState(false);
+type Guest = { id: string; name: string; note?: string; checked?: boolean }
+type Appointment = { id: string; appointmentAt: string; patientId?: string; therapist?: string }
+type LogbookEntry = { id: string; patientId?: string; guestId?: string; action: string; createdAt?: string }
+
+type Patient = { id: string; name: string; phone?: string; lastVisit?: string; status?: string; healthcare?: string; checked?: boolean }
+
+interface ReceptionTabsProps {
+    activeTab?: string
+    setActiveTab?: (tab: string) => void
+    onOpenCheckIn?: () => void
+    onOpenCheckInWithPatient?: (name?: string) => void
+    onOpenCheckInWithPerson?: (id?: string, type?: 'patient' | 'guest') => void
+}
+
+export function ReceptionTabs({ activeTab, setActiveTab, onOpenCheckIn, onOpenCheckInWithPatient, onOpenCheckInWithPerson }: ReceptionTabsProps) {
     const [searchTerm, setSearchTerm] = useState("")
-    const mockPatients = [
-        { id: 1, name: "John Doe", phone: "(555) 123-4567", lastVisit: "2024-01-10", status: "active" },
-    ]
+    const [debouncedSearch, setDebouncedSearch] = useState("")
+    const [cadastrosView, setCadastrosView] = useState<'patients' | 'guests'>('patients')
+
+    useEffect(() => {
+        const t = setTimeout(() => setDebouncedSearch(searchTerm), 250)
+        return () => clearTimeout(t)
+    }, [searchTerm])
+
+    const { data: patientsResp } = useQuery<Patient[]>({ queryKey: ['patients', debouncedSearch], queryFn: () => patientAPI.getAll(debouncedSearch ? { name: debouncedSearch } : undefined).then(r => r.data) })
+    const { data: guestsResp } = useQuery<Guest[]>({ queryKey: ['guests', debouncedSearch], queryFn: () => guestAPI.getAll(debouncedSearch ? { name: debouncedSearch } : undefined).then(r => r.data) })
+    const patients = useMemo(() => patientsResp || [], [patientsResp])
+    const guests = useMemo(() => guestsResp || [], [guestsResp])
 
     const mockQueue = [
+        // placeholder when no data
         { id: 1, name: "John Doe", type: "Paciente", time: "10:30 AM", status: "waiting", therapist: "Dr. Sarah Johnson", purpose: "Joining to chega junto", action: "drivelink"},
     ]
 
@@ -21,13 +48,44 @@ export function ReceptionTabs() {
         { id: 1, name: "Alice Brown", time: "11:30 AM", therapist: "Dr. Sarah Johnson", type: "Fisioterapia" },
     ]
 
-    const filteredPatients = mockPatients.filter(patient =>
+    const { data: appointmentsResp } = useQuery<Appointment[]>({ queryKey: ['appointments'], queryFn: () => appointmentAPI.getAll().then(r => r.data) })
+    const appointments = useMemo(() => appointmentsResp || [], [appointmentsResp])
+
+    const { data: logbooksResp } = useQuery<LogbookEntry[]>({ queryKey: ['logbooks'], queryFn: () => logbookAPI.getAll().then(r => r.data) })
+    const logbooks = useMemo(() => logbooksResp || [], [logbooksResp])
+
+    // derive current queue from patients and guests with checked === true
+    const queuePatients = patients.filter(p => !!p.checked)
+    const queueGuests = guests.filter(g => !!g.checked)
+    const queue = [...queuePatients, ...queueGuests]
+
+    // expected arrivals from appointments in next 2 hours
+    const expectedArrivals = useMemo(() => {
+        const now = new Date()
+        const inTwoHours = new Date(now.getTime() + 2 * 60 * 60 * 1000)
+        return (appointments || []).filter(a => {
+            const appt = new Date(a.appointmentAt || '')
+            return appt >= now && appt <= inTwoHours
+        })
+    }, [appointments])
+
+    const filteredPatients = patients.filter(patient =>
         patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.phone.includes(searchTerm)
+        (patient.phone || '').includes(searchTerm)
     )
+    const filteredGuests = guests.filter(g => (g.name || '').toLowerCase().includes(searchTerm.toLowerCase()))
+
+    const controlledValue = activeTab ?? 'logbook'
+
+    const handleSelectPatient = (p: Patient) => {
+        if (onOpenCheckInWithPerson) onOpenCheckInWithPerson(p.id, 'patient')
+    }
+    const handleSelectGuest = (g: Guest) => {
+        if (onOpenCheckInWithPerson) onOpenCheckInWithPerson(g.id, 'guest')
+    }
 
     return (
-        <Tabs defaultValue="logbook" className="space-y-6">
+        <Tabs value={controlledValue} onValueChange={(v) => setActiveTab?.(v)} className="space-y-6">
             <TabsList className="tracking-wider grid w-full grid-cols-3 shadow-md shadow-cyan-700/30 text-center font-medium">
 
                 <TabsTrigger
@@ -78,23 +136,22 @@ export function ReceptionTabs() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Livro de Entradas e Saídas</CardTitle>
-                        <CardDescription>Histórico de entradas e saídas do prédio</CardDescription>
+                        <CardDescription>Histórico de entrada e saída de visitantes</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {mockQueue.map((entry, index) => (
-                                <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                            {(logbooks || []).map((entry) => (
+                                <div key={entry.id} className="flex items-center justify-between p-4 border rounded-lg">
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-3 h-3 rounded-full ${entry.action === "Check-in" ? "bg-success" : "bg-muted"
-                                            }`} />
+                                        <div className={`w-3 h-3 rounded-full ${entry.action === "check-in" ? "bg-success" : "bg-muted"}`} />
                                         <div>
-                                            <h4 className="font-medium">{entry.name}</h4>
-                                            <p className="text-sm text-muted-foreground">{entry.type}</p>
+                                            <h4 className="font-medium">{entry.patientId || entry.guestId}</h4>
+                                            <p className="text-sm text-muted-foreground">{entry.action}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <div className="font-medium text-sm">{entry.action === "Check-in" ? "Entrada" : "Saída"}</div>
-                                        <div className="text-xs text-muted-foreground">{entry.time}</div>
+                                        <div className="font-medium text-sm">{entry.action === "check-in" ? "Entrada" : "Saída"}</div>
+                                        <div className="text-xs text-muted-foreground">{entry.createdAt || ''}</div>
                                     </div>
                                 </div>
                             ))}
@@ -102,13 +159,12 @@ export function ReceptionTabs() {
                     </CardContent>
                 </Card>
             </TabsContent>
-
-            {/* Expected Arrivals */}
+            
             <TabsContent value="expected" className="space-y-6">
                 <h2 className="text-xl font-semibold">Agendamentos de Hoje</h2>
 
                 <div className="grid gap-4">
-                    {mockExpectedArrivals.map((arrival) => (
+                    {(expectedArrivals || []).map((arrival) => (
                         <Card key={arrival.id}>
                             <CardContent className="flex items-center justify-between p-6">
                                 <div className="flex items-center gap-4">
@@ -116,15 +172,15 @@ export function ReceptionTabs() {
                                         <Clock className="w-6 h-6 text-accent-foreground" />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold">{arrival.name}</h3>
+                                        <h3 className="font-semibold">{arrival.patientId || arrival.id}</h3>
                                         <p className="text-sm text-muted-foreground">
-                                            {arrival.type} • {arrival.time} com {arrival.therapist}
+                                            {new Date(arrival.appointmentAt || '').toLocaleTimeString()} com {arrival.therapist}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Badge variant="outline">Esperado</Badge>
-                                    <Button variant="outline" size="sm" onClick={() => setIsCheckInOpen(true)}>
+                                    <Button variant="outline" size="sm" onClick={() => onOpenCheckIn?.() }>
                                         Pré Check-in
                                     </Button>
                                 </div>
@@ -134,36 +190,59 @@ export function ReceptionTabs() {
                 </div>
             </TabsContent>
 
-            {/* Patient Lookup */}
             <TabsContent value="patients" className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">Buscar Paciente</h2>
+                    <h2 className="text-xl font-semibold">Cadastros</h2>
                     <div className="flex items-center gap-2">
-                        <Search className="w-4 h-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Buscar por nome ou telefone..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-64"
-                        />
+                        <div className="space-x-2">
+                            <Button size="sm" variant={cadastrosView === 'patients' ? 'default' : 'outline'} onClick={() => setCadastrosView('patients')}>Pacientes</Button>
+                            <Button size="sm" variant={cadastrosView === 'guests' ? 'default' : 'outline'} onClick={() => setCadastrosView('guests')}>Guests</Button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Search className="w-4 h-4 text-muted-foreground" />
+                            <Input
+                                placeholder="Buscar por nome..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-64"
+                            />
+                        </div>
                     </div>
                 </div>
 
+                {/* List patients or guests depending on subview */}
                 <div className="grid gap-4">
-                    {filteredPatients.map((patient) => (
+                    {cadastrosView === 'patients' && (filteredPatients.slice(0, 20)).map((patient) => (
                         <Card key={patient.id}>
                             <CardContent className="flex items-center justify-between p-6">
                                 <div>
                                     <h3 className="font-semibold">{patient.name}</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        {patient.phone} • Última visita: {patient.lastVisit}
-                                    </p>
+                                    <p className="text-sm text-muted-foreground">{patient.healthcare || ''}</p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Badge variant={patient.status === "active" ? "default" : "secondary"}>
-                                        {patient.status}
+                                        {patient.status || 'unknown'}
                                     </Badge>
-                                    <Button variant="outline" size="sm" onClick={() => setIsCheckInOpen(true)}>
+                                    <Button variant="outline" size="sm" onClick={() => handleSelectPatient(patient)}>
+                                        Fazer Check-in
+                                    </Button>
+                                    <Button variant="outline" size="sm">
+                                        <FileText className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+
+                    {cadastrosView === 'guests' && (filteredGuests.slice(0, 20)).map((g) => (
+                        <Card key={g.id}>
+                            <CardContent className="flex items-center justify-between p-6">
+                                <div>
+                                    <h3 className="font-semibold">{g.name}</h3>
+                                    <p className="text-sm text-muted-foreground">{g.note || ''}</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <Button variant="outline" size="sm" onClick={() => handleSelectGuest(g)}>
                                         Fazer Check-in
                                     </Button>
                                     <Button variant="outline" size="sm">
