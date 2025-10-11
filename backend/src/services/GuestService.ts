@@ -3,8 +3,10 @@ import { z } from "zod";
 import * as guestRepository from "../repositories/guestRepository";
 
 const GuestSchema = z.object({
-  createdById: z.number(),
-  checked: z.boolean().optional(),
+  name: z.string().min(1, "Name is required"),
+  contact: z.string().optional(),
+  organization: z.string().optional(),
+  createdById: z.string().optional(),
 });
 
 export type GuestInput = z.infer<typeof GuestSchema>;

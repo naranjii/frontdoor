@@ -10,8 +10,7 @@ const PatientSchema = z.object({
   patientCode: z.number().optional(),
   supportLevel: z.number().max(5).optional(),
   driveLink: z.string().optional(),
-  createdById: z.string(),
-  checked: z.boolean().optional(),
+  createdById: z.string()
 });
 
 export type PatientInput = z.infer<typeof PatientSchema>;
