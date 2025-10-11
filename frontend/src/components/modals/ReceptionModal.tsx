@@ -12,9 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, UserPlus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -22,15 +20,13 @@ import { useToast } from "@/hooks/use-toast";
 interface ReceptionModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Optional: preselect the visitor type when opening (e.g. 'patient' or 'guest') */
-  initialVisitorType?: 'patient' | 'guest';
+  /** Optional: preselect the visitor type when opening (e.g. 'atendido' or 'visitante') */
+  initialVisitorType?: 'atendido' | 'visitante';
   /** Optional: preselect a person's id when opening the modal */
   initialSelectedPersonId?: string;
   /** Optional: preselect person type when opening */
-  initialPersonType?: 'patient' | 'guest';
+  initialPersonType?: 'atendido' | 'visitante';
 }
-
-// We'll fetch patients/guests via react-query when needed
 
 export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initialSelectedPersonId, initialPersonType }: ReceptionModalProps) => {
   const [step, setStep] = useState(1);
@@ -40,10 +36,8 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
   const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     name: "",
-    phone: "",
-    email: "",
-    purpose: "",
-    notes: ""
+    organization: "",
+    contact: ""
   });
 
   const { toast } = useToast();
@@ -56,10 +50,8 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
     setSearchTerm("");
     setFormData({
       name: "",
-      phone: "",
-      email: "",
-      purpose: "",
-      notes: ""
+      organization: "",
+      contact: ""
     });
   };
 
@@ -79,7 +71,7 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
         // when opening with an id, try to resolve to a name for selection display
         (async () => {
           try {
-            if (initialPersonType === 'patient') {
+            if (initialPersonType === 'atendido') {
               const resp = await patientAPI.getById(initialSelectedPersonId)
               setSelectedPerson(resp.data.name)
             } else {
@@ -101,13 +93,13 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
   const { data: patientsResp } = useQuery({
     queryKey: ['reception-patients', searchTerm],
     queryFn: () => patientAPI.getAll(searchTerm ? { name: searchTerm } : undefined).then(r => r.data),
-    enabled: step === 2 && visitorType === 'patient',
+    enabled: step === 2 && visitorType === 'atendido',
   });
 
   const { data: guestsResp } = useQuery({
     queryKey: ['reception-guests', searchTerm],
     queryFn: () => guestAPI.getAll(searchTerm ? { name: searchTerm } : undefined).then(r => r.data),
-    enabled: step === 2 && visitorType === 'guest',
+    enabled: step === 2 && visitorType === 'visitante',
   });
   const patients = patientsResp || []
   const guests = guestsResp || []
@@ -116,10 +108,10 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
     if (step === 1 && visitorType) {
       setStep(2);
     } else if (step === 2) {
-      if (visitorType === "guest" && !isNewRegistration && !selectedPerson) {
+      if (visitorType === "visitante" && !isNewRegistration && !selectedPerson) {
         return;
       }
-      if (visitorType === "patient" && !selectedPerson) {
+      if (visitorType === "atendido" && !selectedPerson) {
         return;
       }
       setStep(3);
@@ -130,29 +122,22 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
     // if checking in a patient, toggle checked flag
     (async () => {
       try {
-        if (visitorType === 'patient') {
+        if (visitorType === 'atendido') {
           // if new registration, create patient first
           let patientId = undefined
-          if (isNewRegistration) {
-            const payload: { name: string; createdById: string; age?: number } = { name: formData.name, createdById: '' }
-            const createPayload = { ...(payload as { name: string; createdById: string; age?: number }), createdById: staffId } as Parameters<typeof patientAPI.create>[0]
-            const createResp = await patientAPI.create(createPayload)
-            patientId = createResp.data.id
-          } else {
             const found = patients.find(p => p.name === selectedPerson)
             patientId = found?.id
-          }
           if (patientId) {
             // toggle checked to true
             await patientAPI.update(patientId, { checked: true } as unknown as { name?: string; healthcare?: string; age?: number; patientCode?: number; supportLevel?: number; driveLink?: string; notes?: string })
-            await logbookAPI.create({ staffId, patientId, action: 'check-in' })
+            await logbookAPI.create({ staffId, patientId })
           }
         }
 
-        if (visitorType === 'guest') {
+        if (visitorType === 'visitante') {
           let guestId = undefined
           if (isNewRegistration) {
-            const createResp = await guestAPI.create({ name: formData.name })
+            const createResp = await guestAPI.create({name: formData.name, organization: formData.organization, contact: formData.contact})
             guestId = createResp.data.id
           } else {
             const found = guests.find(g => g.name === selectedPerson)
@@ -161,24 +146,24 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
           if (guestId) {
             // mark guest as checked if endpoint supports it
             await guestAPI.update(guestId, { name: formData.name })
-            await logbookAPI.create({ staffId, guestId, action: 'check-in' })
+            await logbookAPI.create({ staffId, guestId })
           }
         }
 
         toast({
-          title: "Check-in successful",
-          description: `${formData.name || selectedPerson} has been checked in.`,
+          title: "Check-in efetuado",
+          description: `${formData.name || selectedPerson} entrou.`,
         });
         qc.invalidateQueries({ queryKey: ['reception-patients'] });
         qc.invalidateQueries({ queryKey: ['reception-guests'] });
         handleClose();
       } catch (err) {
-        toast({ title: 'Error', description: 'Check-in failed' })
+        toast({ title: 'Erro', description: 'Falha no check in' })
       }
     })()
   };
 
-  const filteredList = (visitorType === 'patient' ? patients : guests).filter((person: { name?: string }) =>
+  const filteredList = (visitorType === 'atendido' ? patients : guests).filter((person: { name?: string }) =>
     (person.name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -189,14 +174,15 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
       <DialogContent className="sm:max-w-md bg-card border-border/50 shadow-medium">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-foreground">
-            {step === 1 && "Select Visitor Type"}
-            {step === 2 && `Select ${visitorType === "patient" ? "Patient" : "Guest"}`}
-            {step === 3 && "Check-in Details"}
+            {step === 1 && "Atendido ou Visitante"}
+            {step === 2 && visitorType === 'atendido' && "Check-in do Atendido"}
+            {step === 2 && visitorType === 'visitante' && "Check-in do Visitante"}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            {step === 1 && "Choose whether this is a patient or guest check-in."}
-            {step === 2 && `Choose an existing ${visitorType} or register a new one.`}
-            {step === 3 && "Complete the check-in process."}
+            {step === 1 && "Escolha entre sua lista de pacientes ou visitantes"}
+            {step === 2 && visitorType === 'atendido' && `Selecione o nome do atendido para fazer o check-in`}
+            {step === 2 && visitorType === 'visitante' && !isNewRegistration && "Cadastre um visitante ou selecione da lista"}
+            {step === 2 && isNewRegistration && "Cadastre um novo visitante na sua recepção"}
           </DialogDescription>
         </DialogHeader>
 
@@ -207,27 +193,28 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
               <Card className="transition-smooth hover:shadow-soft cursor-pointer">
                 <CardHeader className="pb-3">
                   <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="patient" id="patient" />
-                    <Label htmlFor="patient" className="flex items-center gap-3 cursor-pointer">
+                    <Label htmlFor="atendido" className="flex items-center gap-3 cursor-pointer">
                       <User className="h-5 w-5 text-primary" />
+                    <RadioGroupItem value="atendido" id="atendido" />
+
                       <div>
-                        <div className="font-medium">Patient Check-in</div>
-                        <div className="text-sm text-muted-foreground">Registered patient appointment</div>
+                        <div className="font-medium">Check-in do Atendido</div>
                       </div>
                     </Label>
                   </div>
                 </CardHeader>
               </Card>
-
+              
               <Card className="transition-smooth hover:shadow-soft cursor-pointer">
                 <CardHeader className="pb-3">
                   <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="guest" id="guest" />
-                    <Label htmlFor="guest" className="flex items-center gap-3 cursor-pointer">
+                    <Label htmlFor="visitante" className="flex items-center gap-3 cursor-pointer">
+                      
                       <UserPlus className="h-5 w-5 text-accent" />
+                    <RadioGroupItem value="visitante" id="visitante" />
+
                       <div>
-                        <div className="font-medium">Guest Check-in</div>
-                        <div className="text-sm text-muted-foreground">Visitor or new registration</div>
+                        <div className="font-medium">Check-in do Visitante</div>
                       </div>
                     </Label>
                   </div>
@@ -235,25 +222,24 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
               </Card>
             </RadioGroup>
           )}
-
           {/* Step 2: Person Selection */}
           {step === 2 && (
             <div className="space-y-4">
-              {visitorType === "guest" && (
+              {visitorType === "visitante" && (
                 <div className="flex gap-3">
                   <Button
                     variant={!isNewRegistration ? "default" : "outline"}
                     onClick={() => setIsNewRegistration(false)}
                     className="flex-1 transition-smooth"
                   >
-                    Existing Guest
+                    Visita Cadastrada
                   </Button>
                   <Button
                     variant={isNewRegistration ? "default" : "outline"}
                     onClick={() => setIsNewRegistration(true)}
                     className="flex-1 transition-smooth"
                   >
-                    New Registration
+                    Novo Visitante
                   </Button>
                 </div>
               )}
@@ -263,7 +249,7 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
-                      placeholder={`Search ${visitorType}s...`}
+                      placeholder={`Buscar ${visitorType}s...`}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10 transition-smooth"
@@ -288,10 +274,10 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
                 </>
               )}
 
-              {isNewRegistration && (
+              {isNewRegistration && visitorType === 'visitante' && (
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="newName">Full Name</Label>
+                    <Label htmlFor="newName">Nome Completo *</Label>
                     <Input
                       id="newName"
                       value={formData.name}
@@ -300,21 +286,21 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
                     />
                   </div>
                   <div>
-                    <Label htmlFor="newPhone">Phone Number</Label>
+                    <Label htmlFor="newOrganization">Organização ou Empresa</Label>
                     <Input
-                      id="newPhone"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      id="newOrganization"
+                      value={formData.organization}
+                      onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
                       className="transition-smooth"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="newEmail">Email (Optional)</Label>
+                    <Label htmlFor="newContact">Contato</Label>
                     <Input
-                      id="newEmail"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      id="newContact"
+                      type="contact"
+                      value={formData.contact}
+                      onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                       className="transition-smooth"
                     />
                   </div>
@@ -322,40 +308,6 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
               )}
             </div>
           )}
-
-          {/* Step 3: Check-in Details */}
-          {step === 3 && (
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="purpose">Purpose of Visit</Label>
-                <Select value={formData.purpose} onValueChange={(value) => setFormData({ ...formData, purpose: value })}>
-                  <SelectTrigger className="transition-smooth">
-                    <SelectValue placeholder="Select purpose" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="routine-checkup">Routine Checkup</SelectItem>
-                    <SelectItem value="consultation">Consultation</SelectItem>
-                    <SelectItem value="emergency">Emergency</SelectItem>
-                    <SelectItem value="visiting">Visiting Patient</SelectItem>
-                    <SelectItem value="delivery">Delivery</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="notes">Additional Notes (Optional)</Label>
-                <Textarea
-                  id="notes"
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="Any additional information..."
-                  className="transition-smooth"
-                />
-              </div>
-            </div>
-          )}
-
           {/* Navigation Buttons */}
           <div className="flex justify-between pt-4">
             <Button
@@ -363,10 +315,10 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
               onClick={step === 1 ? handleClose : () => setStep(step - 1)}
               className="transition-smooth"
             >
-              {step === 1 ? "Cancel" : "Back"}
+              {step === 1 ? "Cancelar" : "Voltar"}
             </Button>
 
-            {step < 3 ? (
+            {step < 2 ? (
               <Button
                 onClick={handleNext}
                 disabled={
@@ -376,15 +328,15 @@ export const ReceptionModal = ({ open, onOpenChange, initialVisitorType, initial
                 }
                 className="bg-gradient-primary text-primary-foreground transition-smooth"
               >
-                Next
+                →
               </Button>
             ) : (
               <Button
                 onClick={handleSubmit}
-                disabled={!formData.purpose}
+                disabled={!formData.name}
                 className="bg-gradient-primary text-primary-foreground transition-smooth"
               >
-                Complete Check-in
+                Check-in ✓
               </Button>
             )}
           </div>
