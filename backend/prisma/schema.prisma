@@ -46,8 +46,8 @@ model Guest {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  createdById String
-  createdBy   Staff  @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
+  createdById String?
+  createdBy   Staff?  @relation(fields: [createdById], references: [id], map: "Guest_createdBy_fkey")
 
   logbooks Logbook[]
 }
@@ -61,7 +61,6 @@ model Patient {
   patientCode  Int?
   supportLevel Int?
   notes        String?
-  checked      Boolean @default(false)
   driveLink    String?
 
   createdAt DateTime @default(now())
@@ -93,7 +92,7 @@ model Appointment {
 model Logbook {
   id        String   @id @default(uuid())
   checkIn   DateTime @default(now())
-  checkOut  DateTime
+  checkOut  DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
