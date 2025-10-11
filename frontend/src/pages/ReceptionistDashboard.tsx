@@ -5,7 +5,7 @@ import {
   Clock,
 
 } from "lucide-react"
-import { ReceptionModal } from "@/components/ReceptionModal"
+import { ReceptionModal } from "@/components/modals/ReceptionModal"
 import { ReceptionistDashboardHeader } from "@/components/ReceptionistDashboardHeader"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"

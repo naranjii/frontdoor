@@ -8,7 +8,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { patientAPI } from '@/api/api';
-import { EditPatientModal } from '@/components/EditPatientModal';
+import { EditPatientModal } from '@/components/modals/EditPatientModal';
 import { ShowPatientModal } from '@/components/modals/ShowPatientModal';
 
 type Patient = {
