@@ -80,7 +80,7 @@ export const patientAPI = {
 
 // ================= Guest API =================
 export const guestAPI = {
-  create: (data: { name: string; note?: string }) => api.post('/guests', data),
+  create: (data: { name: string; organization?: string; contact?: string; createdById?: string }) => api.post('/guests', data),
   getAll: (filters?: { name?: string }) => api.get('/guests', { params: filters }),
   getById: (id: string) => api.get(`/guests/${id}`),
   update: (id: string, data: { name?: string; note?: string }) => api.put(`/guests/${id}`, data),
@@ -89,12 +89,12 @@ export const guestAPI = {
 
 // ================= Logbook API =================
 export const logbookAPI = {
-  create: (data: { staffId: string; patientId?: string; guestId?: string; action: string }) =>
+  create: (data: { staffId: string; patientId?: string; guestId?: string }) =>
     api.post('/logbook', data),
   getAll: (filters?: { staffId?: string; patientId?: string; guestId?: string }) =>
     api.get('/logbook', { params: filters }),
   getById: (id: string) => api.get(`/logbook/${id}`),
-  update: (id: string, data: { action?: string; staffId?: string; patientId?: string; guestId?: string }) =>
+  checkOut: (id: string, data: { checkOut: Date; }) =>
     api.put(`/logbook/${id}`, data),
   delete: (id: string) => api.delete(`/logbook/${id}`),
 };
